@@ -5,21 +5,29 @@
   "main": "app.ts",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/app.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\""
+    "start": "node build/app.js",
+    "dev": "tsnd --exit-child --transpile-only app.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@typegoose/typegoose": "^9.10.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
-    "mongoose": "^6.4.2"
+    "helmet": "^5.1.0",
+    "http-status-codes": "^2.2.0",
+    "mongoose": "^6.4.2",
+    "pino": "^8.1.0",
+    "zod": "^3.17.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^18.0.0",
     "concurrently": "^7.2.2",
-    "nodemon": "^2.0.18",
+    "pino-pretty": "^8.1.0",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.4"
   }
 }
