@@ -1,28 +1,35 @@
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose'
-import { Client } from '../client/client.model'
-import { AdLocation, CampaignAd } from '../campaignAd/campaignAd.model';
+import mongoose, { Schema } from 'mongoose'
+import { IClient } from '../client/client.model'
+import { EnumAdLocation, ICampaignAd } from '../campaignAd/campaignAd.model'
 
-/*const adSchema = new Schema({
-    adUnit: { type: Schema.Types.ObjectId, ref: 'CampaignAd' },
-    location: String
-})
+export interface ICampaign {
+    name: string
+    client: IClient | string
+    startDate: Date
+    endDate?: Date
+    targetUrl: string
+    ads?: (ICampaignAd | string)[]
+    locations?: (EnumAdLocation | string)[]
+}
 
-const campaignSchema = new Schema({
-    name: { type: String, required: true, trim: true },
-    client : { type: Schema.Types.ObjectId, ref: 'Client' },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: false },
-    //ads : [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],
-    //ads : [{ type: adSchema, required: true }],
-    ads: [{ adId: Number, location: String }],
-}, {
-    timestamps: true,
-})*/
+const campaignSchema = new Schema(
+    {
+        name: { type: String, required: true, trim: true },
+        client: { type: Schema.Types.ObjectId, ref: 'Client' },
+        startDate: { type: Date, required: true },
+        endDate: { type: Date, required: false },
+        targetUrl: { type: String, required: true, trim: true },
+        ads: [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],
+        locations: [{ type: String, required: false }],
+    },
+    {
+        timestamps: true,
+    }
+)
 
-//const Campaign = mongoose.model('Campaign', campaignSchema)
-//module.exports = Campaign
+export const CampaignModel = mongoose.model('Campaign', campaignSchema)
 
-export class Campaign {
+/*export class Campaign {
     @prop({ required: true })
     public name: string
 
@@ -49,4 +56,4 @@ export const CampaignModel = getModelForClass(Campaign, {
     schemaOptions: {
         timestamps: true,
     },
-})
+})*/

@@ -1,28 +1,31 @@
-import { getModelForClass, prop } from '@typegoose/typegoose';
-import { Campaign } from '../campaign/campaign.model';
+import { getModelForClass, prop, Ref } from '@typegoose/typegoose'
+import mongoose, {Schema} from 'mongoose'
+import { ICampaign } from '../campaign/campaign.model';
 
-/*const clientSchema = new Schema({
-    name: { type: String, required: true, unique: true, trim: true },
-    campaigns: [{ type: Schema.Types.ObjectId, ref: 'Campaign' }]
-    //createdDate: { type: Date, default: Date.now },
+export interface IClient {
+    name: string
+    campaigns?: (ICampaign | string)[]
+}
+
+const clientSchema = new Schema({
+    name: { type: String, required: true, trim: true },
+    campaigns : [{ type: Schema.Types.ObjectId, ref: 'Campaign' }],
 }, {
-    timestamps: true,
+    timestamps: true
 })
 
-const Client = mongoose.model('Client', clientSchema)
-module.exports = Client*/
+export const ClientModel = mongoose.model('Client', clientSchema)
 
-
-export class Client {
+/*export class Client {
     @prop({ required: true, unique: true })
     public name: string
 
-    @prop({ required: false })
-    public campaigns: Array<Campaign>
+    @prop()
+    public campaigns?: Ref<Campaign>[]
 }
 
 export const ClientModel = getModelForClass(Client, {
     schemaOptions: {
         timestamps: true,
     },
-})
+})*/
