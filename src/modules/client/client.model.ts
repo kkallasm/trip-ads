@@ -8,7 +8,7 @@ export interface IClient {
 }
 
 const clientSchema = new Schema({
-    name: { type: String, required: true, trim: true },
+    name: { type: String, required: true, trim: true, unique: true },
     campaigns : [{ type: Schema.Types.ObjectId, ref: 'Campaign' }],
 }, {
     timestamps: true

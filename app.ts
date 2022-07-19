@@ -6,6 +6,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import { connectToDatabase } from './src/utils/db'
 import { logger } from '@typegoose/typegoose/lib/logSettings'
+import { StatusCodes } from 'http-status-codes';
 
 dotenv.config()
 
@@ -25,9 +26,12 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use('/api/ads', adsRouter)
-app.use('/api/client', clientRouter)
+app.use('/api/clients', clientRouter)
+
+/** Healthcheck */
+app.use('/ping', (req: Request, res: Response) => res.status(StatusCodes.OK).json('pong'))
 
 app.listen(port, async () => {
     await connectToDatabase()
-    logger.info(`Server listening at htp://localhost:${port}`)
+    logger.info(`Server listening at http://localhost:${port}`)
 })
