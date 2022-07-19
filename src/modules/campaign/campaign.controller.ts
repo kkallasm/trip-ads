@@ -5,9 +5,11 @@ import { RegisterCampaignBody, RegisterCampaignParams } from './campaign.schema'
 //import { UpdateVideoBody, UpdateVideoParams } from "./video.schema";
 
 export async function getCampaignsHandler(req: Request, res: Response) {
-    const campaigns = await getCampaigns();
+    //const campaigns = await getCampaigns();
 
-    return res.status(StatusCodes.OK).send(campaigns)
+    //return res.status(StatusCodes.OK).send(campaigns)
+
+    return res.status(StatusCodes.OK).send('kampaaniad')
 }
 
 export async function updateCampaignHandler(

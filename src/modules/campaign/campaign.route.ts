@@ -10,7 +10,7 @@ const router = express.Router();
 
 //router.post("/", createCampaignHandler);
 
-router.patch("/:videoId", updateCampaignHandler);
+router.patch("/:campaignId", updateCampaignHandler);
 
 //router.get("/:campaignId", getCampaignByidHandler);
 

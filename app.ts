@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express'
 import dotenv from 'dotenv'
-import adRouter from './src/routes/ads'
+import adsRouter from './src/modules/campaign/campaign.route'
+import clientRouter from './src/modules/client/client.route'
 import cors from 'cors'
 import helmet from 'helmet'
 import { connectToDatabase } from './src/utils/db'
@@ -23,7 +24,8 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Trip.ee Ads API')
 })
 
-app.use('/ads', adRouter)
+app.use('/api/ads', adsRouter)
+app.use('/api/client', clientRouter)
 
 app.listen(port, async () => {
     await connectToDatabase()
