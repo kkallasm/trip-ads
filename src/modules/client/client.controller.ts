@@ -3,11 +3,24 @@ import { StatusCodes } from 'http-status-codes'
 import { MongoServerError } from 'mongodb'
 import { CreateClientInput, UpdateClientInput } from './client.schema';
 import { createClient, getClient, getClients } from './client.service'
-//import { UpdateVideoBody, UpdateVideoParams } from "./video.schema";
 
 export async function getClientsHandler(req: Request, res: Response) {
     const clients = await getClients()
     return res.status(StatusCodes.OK).send(clients)
+}
+
+export async function getClientHandler(
+    req: Request<UpdateClientInput['params']>,
+    res: Response
+) {
+    const { clientId } = req.params
+    const client = await getClient(clientId)
+
+    if (!client) {
+        return res.sendStatus(StatusCodes.NOT_FOUND)
+    }
+
+    return res.status(StatusCodes.OK).send(client)
 }
 
 export async function createClientsHandler(
