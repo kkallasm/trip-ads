@@ -1,15 +1,17 @@
 import mongoose, { Schema } from 'mongoose'
-import { IClient } from '../client/client.model'
-import { EnumAdLocation, ICampaignAd } from '../campaignAd/campaignAd.model'
+import { Client } from '../client/client.model'
+import { EnumAdLocation, CampaignAd } from '../campaignAd/campaignAd.model'
 
-export interface ICampaign {
+export interface Campaign extends mongoose.Document {
     name: string
-    client: IClient | string
+    client: Client | string
     startDate: Date
     endDate?: Date
     targetUrl: string
-    ads?: (ICampaignAd | string)[]
+    ads?: (CampaignAd | string)[]
     locations?: (EnumAdLocation | string)[]
+    createdAt: Date
+    updatedAt: Date
 }
 
 const campaignSchema = new Schema(
@@ -27,33 +29,7 @@ const campaignSchema = new Schema(
     }
 )
 
-export const CampaignModel = mongoose.model('Campaign', campaignSchema)
-
-/*export class Campaign {
-    @prop({ required: true })
-    public name: string
-
-    @prop({ required: true, ref: () => Client })
-    public owner: Ref<Client>
-
-    @prop({ index: true, required: true })
-    public startDate: Date
-
-    @prop({ index: true })
-    public endDate?: Date
-
-    @prop({ required: true })
-    public targetUrl: String
-
-    @prop({ ref: () => CampaignAd })
-    public ads: Ref<CampaignAd>[]
-
-    @prop({index: true, enum: Object.values(AdLocation)})
-    public locations: string[]
-}
-
-export const CampaignModel = getModelForClass(Campaign, {
-    schemaOptions: {
-        timestamps: true,
-    },
-})*/
+export const CampaignModel = mongoose.model<Campaign>(
+    'Campaign',
+    campaignSchema
+)
