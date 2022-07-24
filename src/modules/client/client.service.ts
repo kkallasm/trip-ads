@@ -5,9 +5,13 @@ export function createClient({ name }: { name: string }) {
 }
 
 export function getClient(clientId: string) {
-    return ClientModel.findOne({ clientId })
+    return ClientModel.findById(clientId)
 }
 
 export function getClients() {
     return ClientModel.find().lean()
+}
+
+export function deleteClient(clientId: string) {
+    return ClientModel.findByIdAndDelete(clientId)
 }

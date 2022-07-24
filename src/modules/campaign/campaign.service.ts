@@ -4,7 +4,7 @@ export function createCampaign({ client }: { client: string }) {
     return CampaignModel.create({ client })
 }
 
-export function getCampaign(campaignId: number) {
+export function getCampaign(campaignId: string) {
     return CampaignModel.findOne({ campaignId })
 }
 

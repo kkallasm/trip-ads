@@ -1,6 +1,6 @@
 import { date, object, string, TypeOf } from 'zod';
 
-export const registerCampaignSchema = {
+export const campaignSchema = object({
     body: object({
         name: string({
             required_error: "nimi on nõutud",
@@ -19,7 +19,6 @@ export const registerCampaignSchema = {
     params: object({
         campaignId: string(),
     }),
-};
+})
 
-export type RegisterCampaignBody = TypeOf<typeof registerCampaignSchema.body>
-export type RegisterCampaignParams = TypeOf<typeof registerCampaignSchema.params>
+export type CampaignSchema = TypeOf<typeof campaignSchema>

@@ -1,8 +1,17 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { MongoServerError } from 'mongodb'
-import { CreateClientInput, UpdateClientInput } from './client.schema';
-import { createClient, getClient, getClients } from './client.service'
+import {
+    CreateClientInput,
+    DeleteClientInput,
+    UpdateClientInput,
+} from './client.schema'
+import {
+    createClient,
+    deleteClient,
+    getClient,
+    getClients,
+} from './client.service'
 
 export async function getClientsHandler(req: Request, res: Response) {
     const clients = await getClients()
@@ -68,5 +77,24 @@ export async function updateClientsHandler(
         } else {
             throw new Error(e)
         }
+    }
+}
+
+export async function deleteClientHandler(
+    req: Request<DeleteClientInput['params']>,
+    res: Response
+) {
+    const { clientId } = req.params
+    const client = await getClient(clientId)
+
+    if (!client) {
+        return res.sendStatus(StatusCodes.NOT_FOUND)
+    }
+
+    try {
+        await deleteClient(clientId)
+        return res.sendStatus(StatusCodes.OK)
+    } catch (e: any) {
+        throw new Error(e)
     }
 }

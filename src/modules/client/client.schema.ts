@@ -1,13 +1,5 @@
 import { object, string, TypeOf } from 'zod'
 
-/*export const createClientSchema = {
-    body: object({
-        name: string({
-            required_error: "nimi on nõutud",
-        }),
-    }),
-};*/
-
 const params = {
     params: object({
         clientId: string({
@@ -37,9 +29,6 @@ export const deleteClientSchema = object({
     ...params,
 })
 
-export const getClientSchema = object({
-    ...params,
-})
-
 export type CreateClientInput = TypeOf<typeof createClientSchema>
 export type UpdateClientInput = TypeOf<typeof updateClientSchema>
+export type DeleteClientInput = TypeOf<typeof deleteClientSchema>

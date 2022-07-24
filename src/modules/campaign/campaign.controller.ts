@@ -1,35 +1,44 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { createCampaign, getCampaigns, getCampaign } from "./campaign.service";
-import { RegisterCampaignBody, RegisterCampaignParams } from './campaign.schema';
-//import { UpdateVideoBody, UpdateVideoParams } from "./video.schema";
+import { CampaignSchema } from './campaign.schema';
 
 export async function getCampaignsHandler(req: Request, res: Response) {
-    //const campaigns = await getCampaigns();
+    const campaigns = await getCampaigns()
 
-    //return res.status(StatusCodes.OK).send(campaigns)
+    return res.status(StatusCodes.OK).send(campaigns)
+}
 
-    return res.status(StatusCodes.OK).send('kampaaniad')
+export async function getCampaignHandler(req: Request<CampaignSchema['params']>, res: Response) {
+    const { campaignId } = req.params
+
+    const campaign = await getCampaign(campaignId)
+
+    if (!campaign) {
+        return res.sendStatus(StatusCodes.NOT_FOUND)
+    }
+
+    return res.status(StatusCodes.OK).send(campaign)
 }
 
 export async function updateCampaignHandler(
-    req: Request<RegisterCampaignParams, {}, RegisterCampaignBody>,
+    req: Request<CampaignSchema['params'], {}, CampaignSchema['body']>,
     res: Response
 ) {
-    const { campaignId } = req.params;
-    const { name, client, startDate } = req.body;
+    const { campaignId } = req.params
+    const { name, client, startDate } = req.body
 
-    const campaign = await getCampaign(parseInt(campaignId))
+    const campaign = await getCampaign(campaignId)
 
     if (!campaign) {
         return res.status(StatusCodes.NOT_FOUND).send("Campaign not found");
     }
 
-    /*video.title = title;
-    video.description = description;
-    video.published = published;
+    campaign.name = name;
+    campaign.client = client;
+    campaign.startDate = startDate;
 
-    await video.save();*/
+    await campaign.save()
 
     return res.status(StatusCodes.OK).send(campaign);
 }
