@@ -1,24 +1,22 @@
-import express from "express";
+import express from 'express'
 import {
     getCampaignHandler,
     getCampaignsHandler,
-    //createCampaignHandler,
+    createCampaignHandler,
     updateCampaignHandler,
-} from "./campaign.controller";
-import validateRequest from '../../middleware/validateRequest';
-import { campaignSchema } from './campaign.schema';
+} from './campaign.controller'
+import validateRequest from '../../middleware/validateRequest'
+import { campaignSchema } from './campaign.schema'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", getCampaignsHandler);
-router.get("/", getCampaignHandler);
+router.get('/', getCampaignsHandler)
+router.post('/', createCampaignHandler)
+router.get('/:campaignId', getCampaignHandler)
+router.patch(
+    '/:campaignId',
+    validateRequest(campaignSchema),
+    updateCampaignHandler
+)
 
-//router.post("/", createCampaignHandler);
-
-router.patch("/:campaignId", validateRequest(campaignSchema), updateCampaignHandler);
-
-//router.get("/:campaignId", getCampaignByidHandler);
-
-
-
-export default router;
+export default router

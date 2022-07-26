@@ -1,11 +1,30 @@
 import { CampaignModel } from './campaign.model'
 
-export function createCampaign({ client }: { client: string }) {
-    return CampaignModel.create({ client })
+export function createCampaign({
+    name,
+    client,
+    startDate,
+    endDate,
+    targetUrl
+}: {
+    name: string
+    client: string
+    startDate: Date
+    endDate?: Date
+    targetUrl: string
+}) {
+    return CampaignModel.create({ name, client, startDate, endDate, targetUrl })
+}
+
+export function updateCampaign(
+    campaignId: string,
+    { name, client }: { name: string; client: string }
+) {
+    return CampaignModel.findByIdAndUpdate(campaignId, { name, client })
 }
 
 export function getCampaign(campaignId: string) {
-    return CampaignModel.findOne({ campaignId })
+    return CampaignModel.findById(campaignId)
 }
 
 export function getCampaigns() {

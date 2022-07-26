@@ -6,7 +6,8 @@ import cors from 'cors'
 import helmet from 'helmet'
 import { connectToDatabase } from './src/utils/db'
 import { logger } from '@typegoose/typegoose/lib/logSettings'
-import { StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes'
+import campaignRoute from './src/modules/campaign/campaign.route'
 
 dotenv.config()
 
@@ -27,9 +28,12 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/ads', adsRouter)
 app.use('/api/clients', clientRouter)
+app.use('/api/campaigns', campaignRoute)
 
 /** Healthcheck */
-app.use('/ping', (req: Request, res: Response) => res.status(StatusCodes.OK).json('pong'))
+app.use('/ping', (req: Request, res: Response) =>
+    res.status(StatusCodes.OK).json('pong')
+)
 
 app.listen(port, async () => {
     await connectToDatabase()

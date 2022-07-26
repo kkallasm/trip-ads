@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { CallbackError, CallbackWithoutResultAndOptionalError, Schema } from 'mongoose';
 import { Client } from '../client/client.model'
 import { EnumAdLocation, CampaignAd } from '../campaignAd/campaignAd.model'
 
@@ -28,6 +28,18 @@ const campaignSchema = new Schema(
         timestamps: true,
     }
 )
+
+/*campaignSchema.pre('save', function (next: CallbackWithoutResultAndOptionalError) {
+    const self = this
+    CampaignModel.find({name : self.name}, function (err: CallbackError, docs: any) {
+        if (!docs.length) {
+            next();
+        } else {
+            console.log('user exists: ', self.name);
+            next(new Error("User exists!"));
+        }
+    });
+})*/
 
 export const CampaignModel = mongoose.model<Campaign>(
     'Campaign',
