@@ -9,8 +9,8 @@ export function createCampaign({
 }: {
     name: string
     client: string
-    startDate: Date
-    endDate?: Date
+    startDate: string
+    endDate?: string
     targetUrl: string
 }) {
     return CampaignModel.create({ name, client, startDate, endDate, targetUrl })

@@ -6,7 +6,7 @@ import {
     getCampaign,
     updateCampaign,
 } from './campaign.service'
-import { CampaignSchema } from './campaign.schema'
+import { campaignRequestParams, campaignRequestBody } from './campaign.schema';
 
 export async function getCampaignsHandler(req: Request, res: Response) {
     const campaigns = await getCampaigns()
@@ -15,7 +15,7 @@ export async function getCampaignsHandler(req: Request, res: Response) {
 }
 
 export async function getCampaignHandler(
-    req: Request<CampaignSchema['params']>,
+    req: Request<campaignRequestParams>,
     res: Response
 ) {
     const { campaignId } = req.params
@@ -30,26 +30,28 @@ export async function getCampaignHandler(
 }
 
 export async function createCampaignHandler(
-    req: Request<{}, {}, CampaignSchema['body']>,
+    req: Request<{}, {}, campaignRequestBody>,
     res: Response
 ) {
     try {
         const { name, client, startDate, endDate, targetUrl } = req.body
-        const campaign = await createCampaign({
+        /*const campaign = await createCampaign({
             name: name,
             client: client,
             startDate: startDate,
             endDate: endDate,
             targetUrl: targetUrl,
         })
-        return res.status(StatusCodes.OK).send(campaign)
+        return res.status(StatusCodes.OK).send(campaign)*/
+        return res.status(StatusCodes.OK).send('campaign')
+
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
     }
 }
 
 export async function updateCampaignHandler(
-    req: Request<CampaignSchema['params'], {}, CampaignSchema['body']>,
+    req: Request<campaignRequestParams, {}, campaignRequestBody>,
     res: Response
 ) {
     const { campaignId } = req.params
@@ -66,7 +68,7 @@ export async function updateCampaignHandler(
 
     campaign.name = name
     campaign.client = client
-    campaign.startDate = startDate
+    //campaign.startDate = startDate
 
     await campaign.save()
 

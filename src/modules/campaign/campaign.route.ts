@@ -6,16 +6,16 @@ import {
     updateCampaignHandler,
 } from './campaign.controller'
 import validateRequest from '../../middleware/validateRequest'
-import { campaignSchema } from './campaign.schema'
+import { campaignCreateSchema, campaignUpdateSchema } from './campaign.schema'
 
 const router = express.Router()
 
 router.get('/', getCampaignsHandler)
-router.post('/', createCampaignHandler)
+router.post('/', validateRequest(campaignCreateSchema), createCampaignHandler)
 router.get('/:campaignId', getCampaignHandler)
 router.patch(
     '/:campaignId',
-    validateRequest(campaignSchema),
+    validateRequest(campaignUpdateSchema),
     updateCampaignHandler
 )
 
