@@ -7,11 +7,7 @@ import {
     updateClientsHandler,
 } from './client.controller'
 import {validateRequestBody} from '../../middleware/validateRequest'
-import {
-    clientSchema,
-    deleteClientSchema,
-    updateClientSchema
-} from './client.schema';
+import { clientSchema } from './client.schema'
 
 const router = express.Router()
 
@@ -20,12 +16,11 @@ router.get('/:clientId', getClientHandler)
 router.post('/', validateRequestBody(clientSchema), createClientsHandler)
 router.patch(
     '/:clientId',
-    validateRequestBody(updateClientSchema),
+    validateRequestBody(clientSchema),
     updateClientsHandler
 )
 router.delete(
     '/:clientId',
-    validateRequestBody(deleteClientSchema),
     deleteClientHandler
 )
 

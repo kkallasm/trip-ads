@@ -1,11 +1,7 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { MongoServerError } from 'mongodb'
-import {
-    CreateClientInput,
-    DeleteClientInput,
-    UpdateClientInput,
-} from './client.schema'
+import { ClientInput } from './client.schema'
 import {
     createClient,
     deleteClient,
@@ -19,7 +15,7 @@ export async function getClientsHandler(req: Request, res: Response) {
 }
 
 export async function getClientHandler(
-    req: Request<UpdateClientInput['params']>,
+    req: Request<{clientId: string}>,
     res: Response
 ) {
     const { clientId } = req.params
@@ -33,7 +29,7 @@ export async function getClientHandler(
 }
 
 export async function createClientsHandler(
-    req: Request<{}, {}, CreateClientInput['body']>,
+    req: Request<{}, {}, ClientInput>,
     res: Response
 ) {
     try {
@@ -54,7 +50,7 @@ export async function createClientsHandler(
 }
 
 export async function updateClientsHandler(
-    req: Request<UpdateClientInput['params'], {}, UpdateClientInput['body']>,
+    req: Request<{clientId: string}, {}, ClientInput>,
     res: Response
 ) {
     try {
@@ -83,7 +79,7 @@ export async function updateClientsHandler(
 }
 
 export async function deleteClientHandler(
-    req: Request<DeleteClientInput['params']>,
+    req: Request<{clientId: string}>,
     res: Response
 ) {
     const { clientId } = req.params

@@ -1,4 +1,4 @@
-import mongoose, { CallbackWithoutResultAndOptionalError, Schema } from 'mongoose';
+import mongoose, { CallbackWithoutResultAndOptionalError, Schema } from 'mongoose'
 import { Campaign } from '../campaign/campaign.model'
 import { MongoServerError } from 'mongodb'
 
