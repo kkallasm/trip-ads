@@ -35,15 +35,15 @@ export async function createCampaignHandler(
 ) {
     try {
         const { name, client, startDate, endDate, targetUrl } = req.body
-        /*const campaign = await createCampaign({
+        const campaign = await createCampaign({
             name: name,
             client: client,
             startDate: startDate,
             endDate: endDate,
             targetUrl: targetUrl,
         })
-        return res.status(StatusCodes.OK).send(campaign)*/
-        return res.status(StatusCodes.OK).send('campaign')
+
+        return res.status(StatusCodes.OK).send(campaign)
 
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
@@ -55,22 +55,28 @@ export async function updateCampaignHandler(
     res: Response
 ) {
     const { campaignId } = req.params
-    const { name, client, startDate } = req.body
+    const { name, client, startDate, endDate, targetUrl } = req.body
 
-    const campaign = await updateCampaign(campaignId, {
-        name: name,
-        client: client,
-    })
+    try {
+        const campaign = await updateCampaign(campaignId, {
+            name: name,
+            client: client,
+            startDate: startDate,
+            endDate: endDate,
+            targetUrl: targetUrl
+        })
 
-    if (!campaign) {
-        return res.sendStatus(StatusCodes.NOT_FOUND)
+        if (!campaign) {
+            return res.sendStatus(StatusCodes.NOT_FOUND)
+        }
+
+        campaign.name = name
+        campaign.client = client
+        //campaign.startDate = startDate
+
+        await campaign.save()
+        return res.status(StatusCodes.OK).send(campaign)
+    } catch (e: any) {
+        return res.status(StatusCodes.CONFLICT).send(e?.message)
     }
-
-    campaign.name = name
-    campaign.client = client
-    //campaign.startDate = startDate
-
-    await campaign.save()
-
-    return res.status(StatusCodes.OK).send(campaign)
 }

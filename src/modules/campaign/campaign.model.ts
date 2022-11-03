@@ -1,12 +1,12 @@
-import mongoose, { CallbackError, CallbackWithoutResultAndOptionalError, Schema } from 'mongoose';
-import { Client } from '../client/client.model'
+import mongoose, { Schema } from 'mongoose'
+import { Client, ClientModel } from '../client/client.model';
 import { EnumAdLocation, CampaignAd } from '../campaignAd/campaignAd.model'
 
 export interface Campaign extends mongoose.Document {
     name: string
     client: Client | string
-    startDate: Date
-    endDate?: Date
+    startDate: string
+    endDate?: string
     targetUrl: string
     ads?: (CampaignAd | string)[]
     locations?: (EnumAdLocation | string)[]
@@ -18,8 +18,8 @@ const campaignSchema = new Schema(
     {
         name: { type: String, required: true, trim: true },
         client: { type: Schema.Types.ObjectId, ref: 'Client' },
-        startDate: { type: Date, required: true },
-        endDate: { type: Date, required: false },
+        startDate: { type: String, required: true  },
+        endDate: { type: String, required: false },
         targetUrl: { type: String, required: true, trim: true },
         ads: [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],
         locations: [{ type: String, required: false }],
@@ -29,17 +29,14 @@ const campaignSchema = new Schema(
     }
 )
 
-/*campaignSchema.pre('save', function (next: CallbackWithoutResultAndOptionalError) {
-    const self = this
-    CampaignModel.find({name : self.name}, function (err: CallbackError, docs: any) {
-        if (!docs.length) {
-            next();
-        } else {
-            console.log('user exists: ', self.name);
-            next(new Error("User exists!"));
-        }
-    });
-})*/
+campaignSchema.pre('findOneAndUpdate', async function() {
+    console.log('Updating')
+    const update = {...this.getUpdate()}
+
+    //const user = await ClientModel.findById(update.client)
+
+    console.log(update)
+});
 
 export const CampaignModel = mongoose.model<Campaign>(
     'Campaign',

@@ -6,26 +6,26 @@ import {
     getClientsHandler,
     updateClientsHandler,
 } from './client.controller'
-import validateRequest from '../../middleware/validateRequest'
+import {validateRequestBody} from '../../middleware/validateRequest'
 import {
-    createClientSchema,
+    clientSchema,
     deleteClientSchema,
-    updateClientSchema,
-} from './client.schema'
+    updateClientSchema
+} from './client.schema';
 
 const router = express.Router()
 
 router.get('/', getClientsHandler)
 router.get('/:clientId', getClientHandler)
-router.post('/', validateRequest(createClientSchema), createClientsHandler)
+router.post('/', validateRequestBody(clientSchema), createClientsHandler)
 router.patch(
     '/:clientId',
-    validateRequest(updateClientSchema),
+    validateRequestBody(updateClientSchema),
     updateClientsHandler
 )
 router.delete(
     '/:clientId',
-    validateRequest(deleteClientSchema),
+    validateRequestBody(deleteClientSchema),
     deleteClientHandler
 )
 

@@ -1,4 +1,5 @@
 import { CampaignModel } from './campaign.model'
+import { campaignRequestBody } from './campaign.schema';
 
 export function createCampaign({
     name,
@@ -18,9 +19,9 @@ export function createCampaign({
 
 export function updateCampaign(
     campaignId: string,
-    { name, client }: { name: string; client: string }
+    values: campaignRequestBody
 ) {
-    return CampaignModel.findByIdAndUpdate(campaignId, { name, client })
+    return CampaignModel.findByIdAndUpdate(campaignId, values)
 }
 
 export function getCampaign(campaignId: string) {

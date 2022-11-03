@@ -5,9 +5,9 @@ import clientRouter from './src/modules/client/client.route'
 import cors from 'cors'
 import helmet from 'helmet'
 import { connectToDatabase } from './src/utils/db'
-import { logger } from '@typegoose/typegoose/lib/logSettings'
 import { StatusCodes } from 'http-status-codes'
 import campaignRoute from './src/modules/campaign/campaign.route'
+import logger from './src/utils/logger'
 
 dotenv.config()
 

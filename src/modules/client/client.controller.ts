@@ -42,11 +42,13 @@ export async function createClientsHandler(
         return res.status(StatusCodes.OK).send(client)
     } catch (e: any) {
         if (e instanceof MongoServerError && e.code === 11000) {
-            return res
-                .status(StatusCodes.CONFLICT)
-                .send('Duplicate Data Found: \n' + e.message)
+            return res.status(StatusCodes.CONFLICT).send({
+                error: {
+                    name: ['Selline klient on juba olemas']
+                }
+            })
         } else {
-            throw new Error(e)
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e?.message)
         }
     }
 }

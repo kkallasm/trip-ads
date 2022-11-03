@@ -29,6 +29,12 @@ export const deleteClientSchema = object({
     ...params,
 })
 
+export const clientSchema = object({
+    name: string({
+        required_error: 'nimi on nõutud',
+    }),
+})
+
 export type CreateClientInput = TypeOf<typeof createClientSchema>
 export type UpdateClientInput = TypeOf<typeof updateClientSchema>
 export type DeleteClientInput = TypeOf<typeof deleteClientSchema>

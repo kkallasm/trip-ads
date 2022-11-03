@@ -1,22 +1,22 @@
-import mongoose from "mongoose";
-import logger from "./logger";
+import mongoose from 'mongoose'
+import logger from './logger'
 
 export async function connectToDatabase() {
     try {
         await mongoose.connect(process.env.MONGO_URI as string, {
-            dbName: 'ads'
+            dbName: 'ads',
         })
-        logger.info("Connect to database")
+        logger.info('Connected to database')
     } catch (e) {
-        logger.error(e, "Failed to connect to database.")
+        logger.error(e, 'Failed to connect to database.')
         process.exit(1)
     }
 }
 
 export async function disconnectFromDatabase() {
-    await mongoose.connection.close();
+    await mongoose.connection.close()
 
-    logger.info("Disconnect from database");
+    logger.info('Disconnect from database')
 
-    return;
+    return
 }
