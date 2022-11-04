@@ -69,11 +69,13 @@ export async function updateClientsHandler(
         return res.status(StatusCodes.OK).send(client)
     } catch (e: any) {
         if (e instanceof MongoServerError && e.code === 11000) {
-            return res
-                .status(StatusCodes.CONFLICT)
-                .send('Duplicate Data Found: \n' + e.message)
+            return res.status(StatusCodes.CONFLICT).send({
+                error: {
+                    name: ['Selline klient on juba olemas']
+                }
+            })
         } else {
-            throw new Error(e)
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e?.message)
         }
     }
 }
@@ -82,17 +84,16 @@ export async function deleteClientHandler(
     req: Request<{clientId: string}>,
     res: Response
 ) {
-    const { clientId } = req.params
-    const client = await getClient(clientId)
-
-    if (!client) {
-        return res.sendStatus(StatusCodes.NOT_FOUND)
-    }
-
     try {
+        const { clientId } = req.params
+        const client = await getClient(clientId)
+        if (!client) {
+            return res.sendStatus(StatusCodes.NOT_FOUND)
+        }
+
         await deleteClient(clientId)
         return res.sendStatus(StatusCodes.OK)
     } catch (e: any) {
-        throw new Error(e)
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e?.message)
     }
 }

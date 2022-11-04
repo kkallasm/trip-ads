@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { AnyZodObject, ZodEffects, ZodError } from 'zod';
+import { StatusCodes } from 'http-status-codes';
 
 export function validateRequest(schema: AnyZodObject) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -37,10 +38,10 @@ export function validateRequestBody(schema: AnyZodObject|ZodEffects<AnyZodObject
             return next()
         } catch (error: any) {
             if (error instanceof ZodError) {
-                return res.status(422).json({
+                return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
                     error: error.flatten().fieldErrors
                 })
-            } else return res.status(422).json(error)
+            } else return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json(error)
         }
     }
 }
