@@ -1,6 +1,10 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { MongoServerError } from 'mongodb'
+import {
+    deleteCampaignsByClientId,
+    getCampaignsByClientId
+} from '../campaign/campaign.service';
 import { ClientInput } from './client.schema'
 import {
     createClient,
@@ -89,6 +93,11 @@ export async function deleteClientHandler(
         const client = await getClient(clientId)
         if (!client) {
             return res.sendStatus(StatusCodes.NOT_FOUND)
+        }
+
+        const clientCampaigns = await getCampaignsByClientId(clientId)
+        if (clientCampaigns) {
+            await deleteCampaignsByClientId(clientId)
         }
 
         await deleteClient(clientId)

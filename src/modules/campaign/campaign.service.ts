@@ -31,3 +31,11 @@ export function getCampaign(campaignId: string) {
 export function getCampaigns() {
     return CampaignModel.find().lean()
 }
+
+export async function getCampaignsByClientId(clientId: string) {
+    return CampaignModel.find({ client: clientId }).lean()
+}
+
+export async function deleteCampaignsByClientId(clientId: string) {
+    return CampaignModel.deleteMany({ client: clientId })
+}

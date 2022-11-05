@@ -1,17 +1,17 @@
 import { ClientModel } from './client.model'
 
-export function createClient({ name }: { name: string }) {
+export async function createClient({ name }: { name: string }) {
     return ClientModel.create({ name })
 }
 
-export function getClient(clientId: string) {
+export async function getClient(clientId: string) {
     return ClientModel.findById(clientId)
 }
 
-export function getClients() {
+export async function getClients() {
     return ClientModel.find().lean()
 }
 
-export function deleteClient(clientId: string) {
-    return ClientModel.findByIdAndDelete(clientId)
+export async function deleteClient(clientId: string) {
+    ClientModel.findByIdAndDelete(clientId)
 }
