@@ -8,6 +8,7 @@ import { connectToDatabase } from './src/utils/db'
 import { StatusCodes } from 'http-status-codes'
 import campaignRoute from './src/modules/campaign/campaign.route'
 import logger from './src/utils/logger'
+import campaignAdRoute from './src/modules/campaignAd/campaignAd.route';
 
 dotenv.config()
 
@@ -29,6 +30,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/ads', adsRouter)
 app.use('/api/clients', clientRouter)
 app.use('/api/campaigns', campaignRoute)
+app.use('/api/campaign/:campaignId/ads', campaignAdRoute)
 
 /** Healthcheck */
 app.use('/ping', (req: Request, res: Response) =>

@@ -35,7 +35,7 @@ campaignSchema.pre('findOneAndUpdate', async function() {
 
     //const user = await ClientModel.findById(update.client)
 
-    console.log(update)
+    //console.log(update)
 });
 
 export const CampaignModel = mongoose.model<Campaign>(
