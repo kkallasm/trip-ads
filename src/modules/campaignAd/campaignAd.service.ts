@@ -1,29 +1,23 @@
-import { CampaignAdModel } from './campaignAd.model'
+import { CampaignAdModel, EnumAdLocation } from './campaignAd.model'
 
 export function createCampaignAd({
-    name,
-    client,
-    startDate,
-    endDate,
-    targetUrl,
+    campaign,
+    location,
+    imageName,
 }: {
-    name: string
-    client: string
-    startDate: string
-    endDate?: string
-    targetUrl: string
+    campaign: string
+    location: EnumAdLocation
+    imageName: string
 }) {
     return CampaignAdModel.create({
-        name,
-        client,
-        startDate,
-        endDate,
-        targetUrl,
+        campaign,
+        location,
+        imageName,
     })
 }
 
-export function getCampaignAd(campaignId: string) {
-    return CampaignAdModel.findById(campaignId)
+export function getCampaignAd(adId: string) {
+    return CampaignAdModel.findById(adId)
 }
 
 export function getCampaignAds() {

@@ -27,20 +27,20 @@ export async function getCampaignAdHandler(
 }
 
 export async function createCampaignAdHandler(
-    req: Request<{}, {}, campaignAdRequestBody>,
+    req: Request<{campaign: string}, {}, campaignAdRequestBody>,
     res: Response
 ) {
     try {
-        const { name, client, startDate, endDate, targetUrl } = req.body
-        const campaign = await createCampaignAd({
-            name: name,
-            client: client,
-            startDate: startDate,
-            endDate: endDate,
-            targetUrl: targetUrl,
+        const {location, imageName } = req.body
+        const {campaign } = req.params
+
+        const campaignAd = await createCampaignAd({
+            campaign: campaign,
+            location: location,
+            imageName: imageName
         })
 
-        return res.status(StatusCodes.OK).send(campaign)
+        return res.status(StatusCodes.OK).send(campaignAd)
 
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
