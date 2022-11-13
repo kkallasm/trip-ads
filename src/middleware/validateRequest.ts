@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { AnyZodObject, ZodEffects, ZodError } from 'zod';
 import { StatusCodes } from 'http-status-codes';
 
-export function validateRequest(schema: AnyZodObject) {
+/*export function validateRequest(schema: AnyZodObject) {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             await schema.parseAsync({
@@ -29,7 +29,7 @@ export function validateRequest(schema: AnyZodObject) {
             } else return res.status(422).json(error)
         }
     }
-}
+}*/
 
 export function validateRequestBody(schema: AnyZodObject|ZodEffects<AnyZodObject>) {
     return async (req: Request, res: Response, next: NextFunction) => {

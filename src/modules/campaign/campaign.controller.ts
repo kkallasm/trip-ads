@@ -19,9 +19,7 @@ export async function getCampaignHandler(
     res: Response
 ) {
     const { campaignId } = req.params
-
     const campaign = await getCampaign(campaignId)
-
     if (!campaign) {
         return res.sendStatus(StatusCodes.NOT_FOUND)
     }

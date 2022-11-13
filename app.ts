@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv'
 import adsRouter from './src/modules/campaign/campaign.route'
 import clientRouter from './src/modules/client/client.route'
@@ -8,7 +8,7 @@ import { connectToDatabase } from './src/utils/db'
 import { StatusCodes } from 'http-status-codes'
 import campaignRoute from './src/modules/campaign/campaign.route'
 import logger from './src/utils/logger'
-import campaignAdRoute from './src/modules/campaignAd/campaignAd.route';
+import campaignAdRoute from './src/modules/campaignAd/campaignAd.route'
 
 dotenv.config()
 
@@ -30,12 +30,28 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/ads', adsRouter)
 app.use('/api/clients', clientRouter)
 app.use('/api/campaigns', campaignRoute)
-app.use('/api/campaign/:campaignId/ads', campaignAdRoute)
+app.use('/api/campaign-ads', campaignAdRoute)
+
+//app.use('/api/ads/:location', adsRoute)
 
 /** Healthcheck */
 app.use('/ping', (req: Request, res: Response) =>
     res.status(StatusCodes.OK).json('pong')
 )
+
+app.use(function(req, res, next) {
+    return res.status(StatusCodes.NOT_FOUND).json({
+        status: 404,
+        message: 'Route not found'
+    });
+});
+
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: 500,
+        message: error?.message,
+    });
+});
 
 app.listen(port, async () => {
     await connectToDatabase()

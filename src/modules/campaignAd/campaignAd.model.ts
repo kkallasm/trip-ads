@@ -14,8 +14,8 @@ export interface CampaignAd extends mongoose.Document {
 }
 
 const campaignAdSchema = new Schema({
-    campaign : { type: Schema.Types.ObjectId, ref: 'Campaign' },
-    location: { enum: Object.values(EnumAdLocation) },
+    campaign : { type: Schema.Types.ObjectId, ref: 'Campaign', required: true },
+    location: { type: String, required: true, enum: Object.values(EnumAdLocation) },
     imageName: { type: String, required: true },
 })
 

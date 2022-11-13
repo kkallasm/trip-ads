@@ -2,46 +2,70 @@ import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import {
     createCampaignAd,
-    getCampaignAds,
-    getCampaignAd
+    getCampaignAd,
+    getCampaignAdsByCampaignId,
 } from './campaignAd.service'
-import { campaignAdRequestParams, campaignAdRequestBody } from './campaignAd.schema';
+import {
+    campaignAdRequestParams,
+    campaignAdRequestBody,
+} from './campaignAd.schema'
+import { getCampaign } from '../campaign/campaign.service'
 
-export async function getCampaignAdsHandler(req: Request, res: Response) {
-    const campaigns = await getCampaignAds()
+export async function getCampaignAdsHandler(
+    req: Request<campaignAdRequestParams>,
+    res: Response,
+    next: any
+) {
+    try {
+        const { campaignId } = req.params
 
-    return res.status(StatusCodes.OK).send('success')
+        console.log('asda')
+
+        const campaign = await getCampaign(campaignId)
+        if (!campaign) {
+            return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
+        }
+
+        return res.status(StatusCodes.OK).send(campaign)
+
+        //const campaigns = await getCampaignAdsByCampaignId(campaignId)
+        //return res.status(StatusCodes.OK).send(campaigns)
+    } catch (e) {
+        next(e)
+    }
 }
 
 export async function getCampaignAdHandler(
-    req: Request<campaignAdRequestParams>,
+    req: Request<{ campaignId: string; adId: string }>,
     res: Response
 ) {
-    const { campaignId } = req.params
-    const campaign = await getCampaignAd(campaignId)
+    const { campaignId, adId } = req.params
+    const campaign = await getCampaign(campaignId)
     if (!campaign) {
+        return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
+    }
+
+    const campaignAd = await getCampaignAd(adId)
+    if (!campaignAd) {
         return res.sendStatus(StatusCodes.NOT_FOUND)
     }
 
-    return res.status(StatusCodes.OK).send(campaign)
+    return res.status(StatusCodes.OK).send(campaignAd)
 }
 
 export async function createCampaignAdHandler(
-    req: Request<{campaign: string}, {}, campaignAdRequestBody>,
+    req: Request<{}, {}, campaignAdRequestBody>,
     res: Response
 ) {
     try {
-        const {location, imageName } = req.body
-        const {campaign } = req.params
-
+        const { campaign, location, imageName } = req.body
         const campaignAd = await createCampaignAd({
             campaign: campaign,
             location: location,
-            imageName: imageName
+            imageName: imageName,
         })
 
         return res.status(StatusCodes.OK).send(campaignAd)
-
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
     }

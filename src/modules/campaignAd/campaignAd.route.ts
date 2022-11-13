@@ -9,8 +9,8 @@ import { campaignAdSchemaBody } from './campaignAd.schema'
 
 const router = express.Router()
 
-router.get('/', getCampaignAdsHandler)
+router.get('/:campaignId/ads', getCampaignAdsHandler)
 router.post('/', validateRequestBody(campaignAdSchemaBody), createCampaignAdHandler)
-router.get('/:campaignAdId', getCampaignAdHandler)
+router.get('/:campaignId/ad/:adId', getCampaignAdHandler)
 
 export default router

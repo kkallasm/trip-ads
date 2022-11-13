@@ -20,6 +20,6 @@ export function getCampaignAd(adId: string) {
     return CampaignAdModel.findById(adId)
 }
 
-export function getCampaignAds() {
-    return CampaignAdModel.find().lean()
+export async function getCampaignAdsByCampaignId(campaignId: string) {
+    return CampaignAdModel.find({campaign: campaignId}).lean()
 }
