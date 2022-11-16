@@ -9,7 +9,7 @@ import {
     campaignAdRequestParams,
     campaignAdRequestBody,
 } from './campaignAd.schema'
-import { getCampaign } from '../campaign/campaign.service'
+import { getCampaign, updateCampaignLocations } from '../campaign/campaign.service';
 
 export async function getCampaignAdsHandler(
     req: Request<campaignAdRequestParams>,
@@ -18,18 +18,13 @@ export async function getCampaignAdsHandler(
 ) {
     try {
         const { campaignId } = req.params
-
-        console.log('asda')
-
         const campaign = await getCampaign(campaignId)
         if (!campaign) {
             return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
         }
 
-        return res.status(StatusCodes.OK).send(campaign)
-
-        //const campaigns = await getCampaignAdsByCampaignId(campaignId)
-        //return res.status(StatusCodes.OK).send(campaigns)
+        const campaigns = await getCampaignAdsByCampaignId(campaignId)
+        return res.status(StatusCodes.OK).send(campaigns)
     } catch (e) {
         next(e)
     }
@@ -64,6 +59,8 @@ export async function createCampaignAdHandler(
             location: location,
             imageName: imageName,
         })
+
+        await updateCampaignLocations(campaign, location)
 
         return res.status(StatusCodes.OK).send(campaignAd)
     } catch (e: any) {

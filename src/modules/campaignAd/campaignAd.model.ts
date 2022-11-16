@@ -1,5 +1,5 @@
 import mongoose, {Schema} from 'mongoose'
-import { Campaign } from '../campaign/campaign.model';
+import { Campaign } from '../campaign/campaign.model'
 
 export enum EnumAdLocation {
     footer = 'footer',
@@ -14,9 +14,11 @@ export interface CampaignAd extends mongoose.Document {
 }
 
 const campaignAdSchema = new Schema({
-    campaign : { type: Schema.Types.ObjectId, ref: 'Campaign', required: true },
-    location: { type: String, required: true, enum: Object.values(EnumAdLocation) },
+    campaign : { type: Schema.Types.ObjectId, ref: 'Campaign', required: true, index: true },
+    location: { type: String, required: true, enum: Object.values(EnumAdLocation), index: true },
     imageName: { type: String, required: true },
 })
+
+campaignAdSchema.index({campaign: 1, location: 1}, {unique: true})
 
 export const CampaignAdModel = mongoose.model<CampaignAd>('CampaignAd', campaignAdSchema)

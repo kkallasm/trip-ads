@@ -33,6 +33,7 @@ campaignSchema.pre('findOneAndUpdate', async function() {
     console.log('Updating')
     const update = {...this.getUpdate()}
 
+    //todo: check client
     //const user = await ClientModel.findById(update.client)
 
     //console.log(update)
