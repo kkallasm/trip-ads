@@ -1,11 +1,14 @@
 import express from 'express'
 import {
-    getAdsHandler, setAdImpressionHandler
+    adImpressionHandler,
+    getAdsHandler,
+    adClickHandler
 } from './ads.controller';
 
 const router = express.Router()
 
 router.get('/:location', getAdsHandler)
-router.post('/:adId', setAdImpressionHandler)
+router.get('/:adId/click', adClickHandler)
+router.post('/:adId', adImpressionHandler)
 
 export default router
