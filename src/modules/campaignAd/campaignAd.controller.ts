@@ -9,7 +9,7 @@ import {
     campaignAdRequestParams,
     campaignAdRequestBody,
 } from './campaignAd.schema'
-import { getCampaign, updateCampaignLocations } from '../campaign/campaign.service';
+import { getCampaign, updateCampaignAds } from '../campaign/campaign.service';
 
 export async function getCampaignAdsHandler(
     req: Request<campaignAdRequestParams>,
@@ -60,7 +60,8 @@ export async function createCampaignAdHandler(
             imageName: imageName,
         })
 
-        await updateCampaignLocations(campaign, location)
+        //await updateCampaignLocations(campaign, location)
+        await updateCampaignAds(campaign, campaignAd)
 
         return res.status(StatusCodes.OK).send(campaignAd)
     } catch (e: any) {

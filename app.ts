@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv'
-import adsRouter from './src/modules/campaign/campaign.route'
+import adsRouter from './src/modules/ads/ad.route'
 import clientRouter from './src/modules/client/client.route'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -31,8 +31,6 @@ app.use('/api/ads', adsRouter)
 app.use('/api/clients', clientRouter)
 app.use('/api/campaigns', campaignRoute)
 app.use('/api/campaign-ads', campaignAdRoute)
-
-//app.use('/api/ads/:location', adsRoute)
 
 /** Healthcheck */
 app.use('/ping', (req: Request, res: Response) =>

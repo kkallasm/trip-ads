@@ -16,6 +16,7 @@ const clientSchema = new Schema(
     },
     {
         timestamps: true,
+        versionKey: false
     }
 )
 

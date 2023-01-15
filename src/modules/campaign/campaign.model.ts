@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import { Client, ClientModel } from '../client/client.model';
-import { EnumAdLocation, CampaignAd } from '../campaignAd/campaignAd.model'
+import { EnumAdLocation, CampaignAd, campaignAdSchema } from '../campaignAd/campaignAd.model';
 
 export interface Campaign extends mongoose.Document {
     name: string
@@ -9,23 +9,25 @@ export interface Campaign extends mongoose.Document {
     endDate?: string
     targetUrl: string
     ads?: (CampaignAd | string)[]
-    locations?: (EnumAdLocation | string)[]
+    //locations?: (EnumAdLocation | string)[]
     createdAt: Date
     updatedAt: Date
 }
 
-const campaignSchema = new Schema(
+export const campaignSchema = new Schema(
     {
         name: { type: String, required: true, trim: true },
         client: { type: Schema.Types.ObjectId, ref: 'Client' },
         startDate: { type: String, required: true  },
         endDate: { type: String, required: false },
         targetUrl: { type: String, required: true, trim: true },
-        ads: [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],
-        locations: [{ type: String, required: false }],
+        //ads: [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],
+        ads: [{ type: campaignAdSchema }],
+        //locations: [{ type: String, required: false }],
     },
     {
         timestamps: true,
+        versionKey: false
     }
 )
 

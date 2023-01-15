@@ -1,7 +1,6 @@
 import { CampaignModel } from './campaign.model'
 import { campaignRequestBody } from './campaign.schema';
-import mongoose from 'mongoose';
-import { EnumAdLocation } from '../campaignAd/campaignAd.model';
+import { CampaignAd, EnumAdLocation } from '../campaignAd/campaignAd.model';
 
 export function createCampaign({
     name,
@@ -32,6 +31,20 @@ export async function updateCampaignLocations(
 ) {
     return CampaignModel.findByIdAndUpdate(campaignId, {
         $addToSet: { locations: location }
+    })
+}
+
+export async function updateCampaignAds(
+    campaignId: string,
+    ad: CampaignAd
+) {
+
+    //console.log(JSON.stringify(ad), 'AD SIIN')
+    console.log(ad.toObject(), 'AD SIIN2')
+    //console.log(ad.toJSON(), 'AD SIIN3')
+
+    return CampaignModel.findByIdAndUpdate(campaignId, {
+        $addToSet: { ads: ad.toObject() }
     })
 }
 
