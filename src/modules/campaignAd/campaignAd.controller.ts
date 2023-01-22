@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import {
-    createCampaignAd,
-    getCampaignAd,
-    getCampaignAdsByCampaignId,
+    //createCampaignAd,
+    //getCampaignAd,
+    //getCampaignAdsByCampaignId,
 } from './campaignAd.service'
 import {
     campaignAdRequestParams,
@@ -11,7 +11,7 @@ import {
 } from './campaignAd.schema'
 import { getCampaign, updateCampaignAds } from '../campaign/campaign.service';
 
-export async function getCampaignAdsHandler(
+/*export async function getCampaignAdsHandler(
     req: Request<campaignAdRequestParams>,
     res: Response,
     next: any
@@ -28,9 +28,9 @@ export async function getCampaignAdsHandler(
     } catch (e) {
         next(e)
     }
-}
+}*/
 
-export async function getCampaignAdHandler(
+/*export async function getCampaignAdHandler(
     req: Request<{ campaignId: string; adId: string }>,
     res: Response
 ) {
@@ -46,9 +46,9 @@ export async function getCampaignAdHandler(
     }
 
     return res.status(StatusCodes.OK).send(campaignAd)
-}
+}*/
 
-export async function createCampaignAdHandler(
+/*export async function createCampaignAdHandler(
     req: Request<{}, {}, campaignAdRequestBody>,
     res: Response
 ) {
@@ -67,4 +67,4 @@ export async function createCampaignAdHandler(
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
     }
-}
+}*/

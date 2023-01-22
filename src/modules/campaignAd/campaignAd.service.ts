@@ -1,11 +1,12 @@
 import { CampaignAdModel, EnumAdLocation } from './campaignAd.model'
+import { Campaign } from '../campaign/campaign.model';
 
-export function createCampaignAd({
+/*export function createCampaignAd({
     campaign,
     location,
     imageName,
 }: {
-    campaign: string
+    campaign: Campaign
     location: EnumAdLocation
     imageName: string
 }) {
@@ -14,12 +15,8 @@ export function createCampaignAd({
         location,
         imageName,
     })
-}
+}*/
 
-export function getCampaignAd(adId: string) {
+/*export function getCampaignAd(adId: string) {
     return CampaignAdModel.findById(adId)
-}
-
-export async function getCampaignAdsByCampaignId(campaignId: string) {
-    return CampaignAdModel.find({campaign: campaignId}).lean()
-}
+}*/

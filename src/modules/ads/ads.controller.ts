@@ -35,7 +35,7 @@ export async function adClickHandler(
         const { adId } = req.params
         const campaign = await getCampaignByAdId(adId)
 
-        console.log(campaign, 'CAMP')
+        //console.log(campaign, 'CAMP')
 
         if (campaign) {
             await addAdClick(adId, campaign._id)

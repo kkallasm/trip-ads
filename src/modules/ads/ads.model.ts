@@ -1,29 +1,26 @@
 import mongoose, { Schema } from 'mongoose'
-import { CampaignAd } from '../campaignAd/campaignAd.model';
 import { Campaign } from '../campaign/campaign.model';
 
-export interface Stats extends mongoose.Document {
-    ad: CampaignAd | string
-    campaign: Campaign | string
-    action: string
-    data: object
-    createdAt: Date
+export enum EnumAdLocation {
+    footer = 'footer',
+    body = 'body',
+    flightOffer = 'flightOffer',
 }
 
-const statsSchema = new Schema(
-    {
-        ad: { type: Schema.Types.ObjectId, ref: 'CampaignAd' },
-        campaign: { type: Schema.Types.ObjectId, ref: 'Campaign' },
-        action: { type: String, required: true , index: true },
-        data: { type: Object, required: false }
-    },
-    {
-        timestamps: { createdAt: true, updatedAt: false },
-        versionKey: false
-    }
-)
+export interface Ads extends mongoose.Document {
+    campaign: Campaign | string
+    location: EnumAdLocation
+    imageName: string
+}
 
-export const StatsModel = mongoose.model<Stats>(
-    'Stats',
-    statsSchema
-)
+export const adsSchema = new Schema({
+    campaign : { type: Schema.Types.ObjectId, ref: 'Campaign', required: true, index: true },
+    location: { type: String, required: true, enum: Object.values(EnumAdLocation), index: true },
+    imageName: { type: String, required: true },
+}, {
+    versionKey: false
+})
+
+adsSchema.index({campaign: 1, location: 1}, {unique: true})
+
+export const AdsModel = mongoose.model<Ads>('Ads', adsSchema)

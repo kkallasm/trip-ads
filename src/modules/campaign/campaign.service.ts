@@ -1,6 +1,7 @@
-import { CampaignModel } from './campaign.model'
+import { Campaign, CampaignModel } from './campaign.model';
 import { campaignRequestBody } from './campaign.schema';
-import { CampaignAd, EnumAdLocation } from '../campaignAd/campaignAd.model';
+import { CampaignAd, CampaignAdModel, EnumAdLocation } from '../campaignAd/campaignAd.model';
+import { Ads, AdsModel } from '../ads/ads.model';
 
 export function createCampaign({
     name,
@@ -34,18 +35,32 @@ export async function updateCampaignLocations(
     })
 }
 
-export async function updateCampaignAds(
-    campaignId: string,
-    ad: CampaignAd
+export async function syncCampaignAds(
+    campaign: Campaign,
+    ad: Ads
 ) {
-
-    //console.log(JSON.stringify(ad), 'AD SIIN')
-    console.log(ad.toObject(), 'AD SIIN2')
-    //console.log(ad.toJSON(), 'AD SIIN3')
-
-    return CampaignModel.findByIdAndUpdate(campaignId, {
+    return CampaignModel.findByIdAndUpdate(campaign.id, {
         $addToSet: { ads: ad.toObject() }
     })
+}
+
+export async function updateCampaignAd(
+    ad: Ads,
+    location: EnumAdLocation,
+    imageName?: string
+) {
+    const values = {
+        location: location
+    }
+
+    if (imageName) {
+        Object.assign(values, {imageName: imageName})
+    }
+
+    //todo: sync
+    //await syncCampaignAds(ad.campaign, ad)
+
+    return AdsModel.findByIdAndUpdate(ad.id, values, {new: true})
 }
 
 export async function getCampaign(campaignId: string) {
