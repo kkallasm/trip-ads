@@ -9,7 +9,7 @@ import {
     campaignAdRequestParams,
     campaignAdRequestBody,
 } from './campaignAd.schema'
-import { getCampaign, updateCampaignAds } from '../campaign/campaign.service';
+import { getCampaign } from '../campaign/campaign.service';
 
 /*export async function getCampaignAdsHandler(
     req: Request<campaignAdRequestParams>,
