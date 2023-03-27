@@ -10,7 +10,7 @@ import {
 } from './campaign.controller';
 import { validateRequestBody } from '../../middleware/validateRequest'
 import { campaignSchemaBody } from './campaign.schema'
-import { adSchemaBody } from '../ads/ad.schema';
+import { adSchemaBody } from '../ads/ad.schema'
 
 const router = express.Router()
 

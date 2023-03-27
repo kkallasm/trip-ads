@@ -5,9 +5,9 @@ import { EnumAdLocation, CampaignAd, campaignAdSchema } from '../campaignAd/camp
 export interface Campaign extends mongoose.Document {
     name: string
     client: Client | string
-    startDate: string
-    endDate?: string
-    targetUrl: string
+    startDate: Date
+    endDate: Date
+    url: string
     ads?: (CampaignAd | string)[]
     //locations?: (EnumAdLocation | string)[]
     createdAt: Date
@@ -18,28 +18,35 @@ export const campaignSchema = new Schema(
     {
         name: { type: String, required: true, trim: true },
         client: { type: Schema.Types.ObjectId, ref: 'Client' },
-        startDate: { type: String, required: true  },
-        endDate: { type: String, required: false },
-        targetUrl: { type: String, required: true, trim: true },
+        startDate: { type: Date, required: true  },
+        endDate: { type: Date, required: true },
+        url: { type: String, required: true, trim: true },
         //ads: [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],
         ads: [{ type: campaignAdSchema }],
         //locations: [{ type: String, required: false }],
     },
     {
         timestamps: true,
-        versionKey: false
+        versionKey: false,
+        toJSON: {
+            transform(doc, ret) {
+                ret.id = ret._id
+                delete ret._id
+                delete ret.__v
+                return ret
+            }
+        }
     }
 )
 
-campaignSchema.pre('findOneAndUpdate', async function() {
-    console.log('Updating')
-    const update = {...this.getUpdate()}
+campaignSchema.pre('save', async function(next) {
+    const client = await ClientModel.findById(this.client)
+    if (!client) {
+        next(new Error('Client not found'))
+    }
 
-    //todo: check client
-    //const user = await ClientModel.findById(update.client)
-
-    //console.log(update)
-});
+    next()
+})
 
 export const CampaignModel = mongoose.model<Campaign>(
     'Campaign',

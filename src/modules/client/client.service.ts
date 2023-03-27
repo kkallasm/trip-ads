@@ -9,7 +9,7 @@ export async function getClient(clientId: string) {
 }
 
 export async function getClients() {
-    return ClientModel.find().lean()
+    return ClientModel.find().sort({createdAt: -1 }).select(['id', 'name'])
 }
 
 export async function deleteClient(clientId: string) {

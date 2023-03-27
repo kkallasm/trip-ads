@@ -34,12 +34,9 @@ export async function adClickHandler(
     try {
         const { adId } = req.params
         const campaign = await getCampaignByAdId(adId)
-
-        //console.log(campaign, 'CAMP')
-
         if (campaign) {
             await addAdClick(adId, campaign._id)
-            return res.status(StatusCodes.OK).send('success')
+            return res.status(StatusCodes.OK).send(campaign.url)
         } else return res.sendStatus(StatusCodes.CONFLICT)
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)

@@ -11,10 +11,15 @@ import {
 import { campaignRequestParams, campaignRequestBody } from './campaign.schema';
 import { adRequestBody, adRequestParams, adUpdateRequestBody } from '../ads/ad.schema';
 import { createAd, getAdsByCampaignId, getAdById } from '../ads/ads.service';
+import {getClients} from "../client/client.service";
 
 export async function getCampaignsHandler(req: Request, res: Response) {
     const campaigns = await getCampaigns()
-    return res.status(StatusCodes.OK).send(campaigns)
+    const clients = await getClients()
+    return res.status(StatusCodes.OK).send({
+        campaigns: campaigns,
+        clients: clients
+    })
 }
 
 export async function getCampaignHandler(
@@ -35,14 +40,16 @@ export async function createCampaignHandler(
     res: Response
 ) {
     try {
-        const { name, client, startDate, endDate, targetUrl } = req.body
-        const campaign = await createCampaign({
+        const { name, clientId, startDate, endDate, url } = req.body
+        let campaign = await createCampaign({
             name: name,
-            client: client,
+            client: clientId,
             startDate: startDate,
             endDate: endDate,
-            targetUrl: targetUrl,
+            url: url
         })
+
+        campaign = await campaign.populate('client', {name})
 
         return res.status(StatusCodes.OK).send(campaign)
 
@@ -56,26 +63,20 @@ export async function updateCampaignHandler(
     res: Response
 ) {
     const { campaignId } = req.params
-    const { name, client, startDate, endDate, targetUrl } = req.body
-
+    const { name, clientId, startDate, endDate, url } = req.body
     try {
         const campaign = await updateCampaign(campaignId, {
             name: name,
-            client: client,
+            client: clientId,
             startDate: startDate,
             endDate: endDate,
-            targetUrl: targetUrl
+            url: url
         })
 
         if (!campaign) {
             return res.sendStatus(StatusCodes.NOT_FOUND)
         }
 
-        campaign.name = name
-        campaign.client = client
-        //campaign.startDate = startDate
-
-        await campaign.save()
         return res.status(StatusCodes.OK).send(campaign)
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
@@ -115,7 +116,7 @@ export async function createCampaignAdHandler(
         }
 
         const ad = await createAd({
-            campaign: campaign,
+            campaignId: campaign,
             location: location,
             imageName: imageName,
         })

@@ -5,8 +5,8 @@ import { MongoServerError } from 'mongodb'
 export interface Client extends mongoose.Document {
     name: string
     //campaigns?: (Campaign | string)[]
-    createdAt: Date
-    updatedAt: Date
+    //createdAt: Date
+    //updatedAt: Date
 }
 
 const clientSchema = new Schema(
@@ -16,7 +16,15 @@ const clientSchema = new Schema(
     },
     {
         timestamps: true,
-        versionKey: false
+        versionKey: false,
+        toJSON: {
+            transform(doc, ret) {
+                ret.id = ret._id
+                delete ret._id
+                delete ret.__v
+                return ret
+            }
+        }
     }
 )
 

@@ -16,7 +16,7 @@ export async function addAdImpression(
 ) {
     return StatsModel.create({
         ad: adId,
-        campaign: campaignId,
+        campaignId: campaignId,
         action: 'view',
         data: data,
     })
@@ -25,7 +25,7 @@ export async function addAdImpression(
 export async function addAdClick(adId: string, campaignId: string, data?: any) {
     return StatsModel.create({
         ad: adId,
-        campaign: campaignId,
+        campaignId: campaignId,
         action: 'click',
         data: data,
     })
@@ -44,16 +44,16 @@ export async function getAdsByCampaignId(campaignId: string) {
 }
 
 export function createAd({
-    campaign,
+    campaignId,
     location,
     imageName,
 }: {
-    campaign: Campaign
+    campaignId: Campaign
     location: EnumAdLocation
     imageName: string
 }) {
     return AdsModel.create({
-        campaign,
+        campaignId,
         location,
         imageName,
     })

@@ -1,6 +1,5 @@
 import { Campaign, CampaignModel } from './campaign.model';
-import { campaignRequestBody } from './campaign.schema';
-import { CampaignAd, CampaignAdModel, EnumAdLocation } from '../campaignAd/campaignAd.model';
+import { EnumAdLocation } from '../campaignAd/campaignAd.model';
 import { Ads, AdsModel } from '../ads/ads.model';
 
 export function createCampaign({
@@ -8,22 +7,27 @@ export function createCampaign({
     client,
     startDate,
     endDate,
-    targetUrl
+    url
 }: {
     name: string
     client: string
     startDate: string
-    endDate?: string
-    targetUrl: string
+    endDate: string
+    url: string
 }) {
-    return CampaignModel.create({ name, client, startDate, endDate, targetUrl })
+    return CampaignModel.create({ name, client, startDate, endDate, url })
 }
 
 export async function updateCampaign(
     campaignId: string,
-    values: campaignRequestBody
-) {
-    return CampaignModel.findByIdAndUpdate(campaignId, values)
+    values: {
+        name: string
+        client: string
+        startDate: string
+        endDate: string
+        url: string
+}) {
+    return CampaignModel.findByIdAndUpdate(campaignId, values, {new: true}).populate('client')
 }
 
 export async function updateCampaignLocations(
@@ -69,7 +73,7 @@ export async function getCampaign(campaignId: string) {
 }
 
 export async function getCampaigns() {
-    return CampaignModel.find().lean()
+    return CampaignModel.find().populate('client').limit(10).sort({'endDate': -1})
 }
 
 export async function getCampaignsByClientId(clientId: string) {

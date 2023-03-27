@@ -4,7 +4,7 @@ import { Campaign } from '../campaign/campaign.model';
 
 export interface Stats extends mongoose.Document {
     ad: CampaignAd | string
-    campaign: Campaign | string
+    campaignId: Campaign | string
     action: string
     data: object
     createdAt: Date
@@ -13,8 +13,8 @@ export interface Stats extends mongoose.Document {
 const statsSchema = new Schema(
     {
         ad: { type: Schema.Types.ObjectId, ref: 'Ads' },
-        campaign: { type: Schema.Types.ObjectId, ref: 'Campaign' },
-        action: { type: String, required: true , index: true },
+        campaignId: { type: Schema.Types.ObjectId, ref: 'Campaign' },
+        action: { type: String, required: true, index: true },
         data: { type: Object, required: false }
     },
     {

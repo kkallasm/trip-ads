@@ -1,12 +1,8 @@
 import { object, string, TypeOf } from 'zod'
 
-const checkValidDates = (startDate: string, endDate?: string) => {
-    if (!endDate) {
-        return false
-    }
+const checkValidDates = (startDate: string, endDate: string) => {
     const start = new Date(startDate)
     const end = new Date(endDate)
-
     return start <= end
 }
 
@@ -14,7 +10,7 @@ export const campaignSchemaBody = object({
     name: string({
         required_error: "Nimi on nõutud",
     }),
-    client: string({
+    clientId: string({
         required_error: "Klient on puudu",
     }),
     startDate: string({
@@ -29,11 +25,7 @@ export const campaignSchemaBody = object({
     }, {
         message: 'Vale kuupäeva formaat (YYYY-mm-dd)'
     }),
-    endDate: string().optional().refine((val: string|undefined) => {
-        if (!val) {
-            return true
-        }
-
+    endDate: string().refine((val: string) => {
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (val.match(regex) === null) {
             return false
@@ -43,7 +35,7 @@ export const campaignSchemaBody = object({
     }, {
         message: 'Vale kuupäeva formaat (YYYY-mm-dd)',
     }),
-    targetUrl: string({
+    url: string({
         required_error: 'Link on puudu',
     }).url('Link ei ole url'),
 }).refine((data) => checkValidDates(data.startDate, data.endDate), {
