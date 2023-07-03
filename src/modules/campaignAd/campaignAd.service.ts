@@ -1,7 +1,11 @@
-import { CampaignAdModel, EnumAdLocation } from './campaignAd.model'
+import { CampaignAd, CampaignAdModel, EnumAdLocation } from "./campaignAd.model";
 import { Campaign } from '../campaign/campaign.model';
 
-/*export function createCampaignAd({
+export async function getAdsByCampaignId(campaignId: string) {
+  return CampaignAdModel.find({ campaign: campaignId }).lean()
+}
+
+export function createCampaignAd({
     campaign,
     location,
     imageName,
@@ -15,7 +19,26 @@ import { Campaign } from '../campaign/campaign.model';
         location,
         imageName,
     })
-}*/
+}
+
+export async function updateCampaignAd(
+  ad: CampaignAd,
+  location: EnumAdLocation,
+  imageName?: string
+) {
+    const values = {
+        location: location
+    }
+
+    if (imageName) {
+        Object.assign(values, {imageName: imageName})
+    }
+
+    //todo: sync
+    //await syncCampaignAds(ad.campaign, ad)
+
+    return CampaignAdModel.findByIdAndUpdate(ad.id, values, {new: true})
+}
 
 /*export function getCampaignAd(adId: string) {
     return CampaignAdModel.findById(adId)

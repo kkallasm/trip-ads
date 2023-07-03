@@ -1,7 +1,6 @@
-import { Campaign, CampaignModel } from '../campaign/campaign.model'
-import { AdsModel } from './ads.model'
+import { CampaignModel } from '../campaign/campaign.model'
 import { StatsModel } from '../stats/stats.model'
-import { CampaignAdModel, EnumAdLocation } from '../campaignAd/campaignAd.model'
+import { CampaignAdModel } from "../campaignAd/campaignAd.model";
 
 export async function getActiveCampaignsByLocation(location: string) {
     return CampaignModel.find({
@@ -32,29 +31,9 @@ export async function addAdClick(adId: string, campaignId: string, data?: any) {
 }
 
 export function getAdById(adId: string) {
-    return AdsModel.findById(adId)
+    return CampaignAdModel.findById(adId)
 }
 
 export async function getCampaignByAdId(adId: string) {
     return CampaignModel.findOne({ ads: { $elemMatch: { _id: adId } } }).lean()
-}
-
-export async function getAdsByCampaignId(campaignId: string) {
-    return AdsModel.find({ campaign: campaignId }).lean()
-}
-
-export function createAd({
-    campaignId,
-    location,
-    imageName,
-}: {
-    campaignId: Campaign
-    location: EnumAdLocation
-    imageName: string
-}) {
-    return AdsModel.create({
-        campaignId,
-        location,
-        imageName,
-    })
 }

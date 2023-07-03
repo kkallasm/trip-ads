@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv'
-import adsRouter from './src/modules/ads/ad.route'
+import adsRouter from './src/modules/ads/ads.route'
 import clientRouter from './src/modules/client/client.route'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -8,7 +8,6 @@ import { connectToDatabase } from './src/utils/db'
 import { StatusCodes } from 'http-status-codes'
 import campaignRoute from './src/modules/campaign/campaign.route'
 import logger from './src/utils/logger'
-import campaignAdRoute from './src/modules/campaignAd/campaignAd.route'
 
 dotenv.config()
 
@@ -30,7 +29,6 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/ads', adsRouter)
 app.use('/api/clients', clientRouter)
 app.use('/api/campaigns', campaignRoute)
-app.use('/api/campaign-ads', campaignAdRoute)
 
 /** Healthcheck */
 app.use('/ping', (req: Request, res: Response) =>

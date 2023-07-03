@@ -1,19 +1,23 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { addAdClick, addAdImpression, getActiveCampaignsByLocation, getCampaignByAdId } from './ads.service';
+import {
+    addAdClick,
+    addAdImpression,
+    getActiveCampaignsByLocation,
+    getCampaignByAdId,
+} from './ads.service'
 
 export async function getAdsHandler(
-    req: Request<{location: string}>,
+    req: Request<{ location: string }>,
     res: Response
 ) {
     const { location } = req.params
     const ads = await getActiveCampaignsByLocation(location)
-
     return res.status(StatusCodes.OK).send(ads)
 }
 
 export async function adImpressionHandler(
-    req: Request<{adId: string}, {}, {campaignId: string, data: any}>,
+    req: Request<{ adId: string }, {}, { campaignId: string; data: any }>,
     res: Response
 ) {
     try {
@@ -28,7 +32,7 @@ export async function adImpressionHandler(
 }
 
 export async function adClickHandler(
-    req: Request<{adId: string}, {}, {}>,
+    req: Request<{ adId: string }, {}, {}>,
     res: Response
 ) {
     try {
@@ -42,5 +46,3 @@ export async function adClickHandler(
         return res.status(StatusCodes.CONFLICT).send(e?.message)
     }
 }
-
-

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import { Client, ClientModel } from '../client/client.model';
-import { EnumAdLocation, CampaignAd, campaignAdSchema } from '../campaignAd/campaignAd.model';
+import { CampaignAd, campaignAdSchema } from '../campaignAd/campaignAd.model';
 
 export interface Campaign extends mongoose.Document {
     name: string

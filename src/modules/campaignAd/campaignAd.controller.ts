@@ -1,20 +1,20 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import {
-    //createCampaignAd,
-    //getCampaignAd,
-    //getCampaignAdsByCampaignId,
-} from './campaignAd.service'
+    createCampaignAd,
+    getAdsByCampaignId, updateCampaignAd
+} from "./campaignAd.service";
 import {
     campaignAdRequestParams,
-    campaignAdRequestBody,
-} from './campaignAd.schema'
-import { getCampaign } from '../campaign/campaign.service';
+    campaignAdRequestBody, campaignAdUpdateRequestBody
+} from "./campaignAd.schema";
+import { getCampaign, syncCampaignAds } from "../campaign/campaign.service";
+import { getAdById } from "../ads/ads.service";
 
-/*export async function getCampaignAdsHandler(
-    req: Request<campaignAdRequestParams>,
-    res: Response,
-    next: any
+export async function getCampaignAdsHandler(
+  req: Request<campaignAdRequestParams>,
+  res: Response,
+  next: any
 ) {
     try {
         const { campaignId } = req.params
@@ -23,48 +23,60 @@ import { getCampaign } from '../campaign/campaign.service';
             return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
         }
 
-        const campaigns = await getCampaignAdsByCampaignId(campaignId)
-        return res.status(StatusCodes.OK).send(campaigns)
+        const ads = await getAdsByCampaignId(campaignId)
+        return res.status(StatusCodes.OK).send(ads)
     } catch (e) {
         next(e)
     }
-}*/
+}
 
-/*export async function getCampaignAdHandler(
-    req: Request<{ campaignId: string; adId: string }>,
-    res: Response
+export async function createCampaignAdHandler(
+  req: Request<campaignAdRequestParams, {}, campaignAdRequestBody>,
+  res: Response
 ) {
-    const { campaignId, adId } = req.params
-    const campaign = await getCampaign(campaignId)
-    if (!campaign) {
-        return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
-    }
+    const { campaignId } = req.params
+    const { location, imageName } = req.body
 
-    const campaignAd = await getCampaignAd(adId)
-    if (!campaignAd) {
-        return res.sendStatus(StatusCodes.NOT_FOUND)
-    }
-
-    return res.status(StatusCodes.OK).send(campaignAd)
-}*/
-
-/*export async function createCampaignAdHandler(
-    req: Request<{}, {}, campaignAdRequestBody>,
-    res: Response
-) {
     try {
-        const { campaign, location, imageName } = req.body
-        const campaignAd = await createCampaignAd({
+        const campaign = await getCampaign(campaignId)
+        if (!campaign) {
+            return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
+        }
+
+        const ad = await createCampaignAd({
             campaign: campaign,
             location: location,
             imageName: imageName,
         })
 
-        //await updateCampaignLocations(campaign, location)
-        await updateCampaignAds(campaign, campaignAd)
+        await syncCampaignAds(campaign, ad)
 
-        return res.status(StatusCodes.OK).send(campaignAd)
+        return res.status(StatusCodes.OK).send(ad)
     } catch (e: any) {
-        return res.status(StatusCodes.CONFLICT).send(e?.message)
+        if (e?.code === 11000) {
+            return res.status(StatusCodes.CONFLICT).send('Ad with location "' + location + '" already exists')
+        } else {
+            return res.status(StatusCodes.CONFLICT).send(e?.message)
+        }
     }
-}*/
+}
+
+export async function updateCampaignAdHandler(
+  req: Request<{ campaignId: string; adId: string }, {}, campaignAdUpdateRequestBody>,
+  res: Response
+) {
+    const { campaignId, adId } = req.params
+    const { location, imageName } = req.body
+
+    const ad = await getAdById(adId)
+    if (!ad) {
+        return res.sendStatus(StatusCodes.NOT_FOUND)
+    }
+
+    if (ad.campaign.toString() !== campaignId) {
+        return res.sendStatus(StatusCodes.FORBIDDEN)
+    }
+
+    const updated = await updateCampaignAd(ad, location, imageName)
+    return res.status(StatusCodes.OK).send(updated)
+}

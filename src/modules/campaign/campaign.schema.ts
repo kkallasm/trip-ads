@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from 'zod'
+import { object, string, TypeOf, z } from "zod";
 
 const checkValidDates = (startDate: string, endDate: string) => {
     const start = new Date(startDate)
@@ -46,15 +46,6 @@ export const campaignSchemaBody = object({
 export const campaignSchemaParams = object({
     campaignId: string(),
 })
-
-/*export const campaignCreateSchema = object({
-    body: campaignSchemaBody,
-})*/
-
-/*export const campaignUpdateSchema = object({
-    body: campaignSchemaBody,
-    params: campaignSchemaParams
-})*/
 
 export type campaignRequestBody = TypeOf<typeof campaignSchemaBody>
 export type campaignRequestParams = TypeOf<typeof campaignSchemaParams>

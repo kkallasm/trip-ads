@@ -4,14 +4,15 @@ import {
     getCampaignsHandler,
     createCampaignHandler,
     updateCampaignHandler,
-    getCampaignAdsHandler,
-    createCampaignAdHandler,
-    updateCampaignAdHandler
-} from './campaign.controller';
+} from './campaign.controller'
 import { validateRequestBody } from '../../middleware/validateRequest'
 import { campaignSchemaBody } from './campaign.schema'
-import { adSchemaBody } from '../ads/ad.schema'
-
+import {
+    createCampaignAdHandler,
+    getCampaignAdsHandler,
+    updateCampaignAdHandler,
+} from '../campaignAd/campaignAd.controller'
+import { campaignAdSchemaBody } from '../campaignAd/campaignAd.schema'
 const router = express.Router()
 
 router.get('/', getCampaignsHandler)
@@ -22,8 +23,13 @@ router.patch(
     validateRequestBody(campaignSchemaBody),
     updateCampaignHandler
 )
+
 router.get('/:campaignId/ads', getCampaignAdsHandler)
-router.post('/:campaignId/ads', validateRequestBody(adSchemaBody), createCampaignAdHandler)
+router.post(
+    '/:campaignId/ads',
+    validateRequestBody(campaignAdSchemaBody),
+    createCampaignAdHandler
+)
 router.patch('/:campaignId/ads/:adId', updateCampaignAdHandler)
 
 export default router

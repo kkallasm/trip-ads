@@ -2,9 +2,9 @@ import { object, string, TypeOf, z } from 'zod'
 import { EnumAdLocation } from './campaignAd.model'
 
 export const campaignAdSchemaBody = object({
-    campaign: string({
+    /*campaign: string({
         required_error: "Kampaania on puudu",
-    }),
+    }),*/
     location: z.nativeEnum(EnumAdLocation, {
         required_error: 'Asukoht puudu'
     }),
@@ -18,4 +18,5 @@ export const campaignAdSchemaParams = object({
 })
 
 export type campaignAdRequestBody = TypeOf<typeof campaignAdSchemaBody>
+export type campaignAdUpdateRequestBody = TypeOf<typeof campaignAdSchemaBody>
 export type campaignAdRequestParams = TypeOf<typeof campaignAdSchemaParams>
