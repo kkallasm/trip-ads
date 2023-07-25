@@ -12,24 +12,16 @@ import {
     getCampaignAdsHandler,
     updateCampaignAdHandler,
 } from '../campaignAd/campaignAd.controller'
-import { campaignAdSchemaBody } from '../campaignAd/campaignAd.schema'
+import { campaignAdAddSchemaBody, campaignAdUpdateSchemaBody } from "../campaignAd/campaignAd.schema";
 const router = express.Router()
 
 router.get('/', getCampaignsHandler)
 router.post('/', validateRequestBody(campaignSchemaBody), createCampaignHandler)
 router.get('/:campaignId', getCampaignHandler)
-router.patch(
-    '/:campaignId',
-    validateRequestBody(campaignSchemaBody),
-    updateCampaignHandler
-)
+router.patch('/:campaignId', validateRequestBody(campaignSchemaBody), updateCampaignHandler)
 
 router.get('/:campaignId/ads', getCampaignAdsHandler)
-router.post(
-    '/:campaignId/ads',
-    validateRequestBody(campaignAdSchemaBody),
-    createCampaignAdHandler
-)
-router.patch('/:campaignId/ads/:adId', updateCampaignAdHandler)
+router.post('/:campaignId/ads', validateRequestBody(campaignAdAddSchemaBody), createCampaignAdHandler)
+router.patch('/:campaignId/ads/:adId', validateRequestBody(campaignAdUpdateSchemaBody), updateCampaignAdHandler)
 
 export default router

@@ -1,13 +1,13 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv'
-import adsRouter from './src/modules/ads/ads.route'
-import clientRouter from './src/modules/client/client.route'
+import adsRouter from './modules/ads/ads.route'
+import clientRouter from './modules/client/client.route'
 import cors from 'cors'
 import helmet from 'helmet'
-import { connectToDatabase } from './src/utils/db'
+import { connectToDatabase } from './utils/db'
 import { StatusCodes } from 'http-status-codes'
-import campaignRoute from './src/modules/campaign/campaign.route'
-import logger from './src/utils/logger'
+import campaignRoute from './modules/campaign/campaign.route'
+import logger from './utils/logger'
 
 dotenv.config()
 

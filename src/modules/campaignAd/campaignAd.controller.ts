@@ -2,11 +2,12 @@ import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import {
     createCampaignAd,
-    getAdsByCampaignId, updateCampaignAd
+    getAdsByCampaignId, updateCampaignAd, uploadImageToDOSpaces
 } from "./campaignAd.service";
 import {
     campaignAdRequestParams,
-    campaignAdRequestBody, campaignAdUpdateRequestBody
+    campaignAdAddRequestBodyType,
+    campaignAdUpdateRequestBodyType
 } from "./campaignAd.schema";
 import { getCampaign, syncCampaignAds } from "../campaign/campaign.service";
 import { getAdById } from "../ads/ads.service";
@@ -31,17 +32,22 @@ export async function getCampaignAdsHandler(
 }
 
 export async function createCampaignAdHandler(
-  req: Request<campaignAdRequestParams, {}, campaignAdRequestBody>,
+  req: Request<campaignAdRequestParams, {}, campaignAdAddRequestBodyType>,
   res: Response
 ) {
     const { campaignId } = req.params
-    const { location, imageName } = req.body
+    const { location, image } = req.body
+
+    console.log(req.params, req.body)
 
     try {
         const campaign = await getCampaign(campaignId)
         if (!campaign) {
             return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
         }
+
+        //todo: insert image to spaces
+        const imageName = await uploadImageToDOSpaces({ image: image})
 
         const ad = await createCampaignAd({
             campaign: campaign,
@@ -62,11 +68,11 @@ export async function createCampaignAdHandler(
 }
 
 export async function updateCampaignAdHandler(
-  req: Request<{ campaignId: string; adId: string }, {}, campaignAdUpdateRequestBody>,
+  req: Request<{ campaignId: string; adId: string }, {}, campaignAdUpdateRequestBodyType>,
   res: Response
 ) {
     const { campaignId, adId } = req.params
-    const { location, imageName } = req.body
+    const { location, image } = req.body
 
     const ad = await getAdById(adId)
     if (!ad) {
@@ -75,6 +81,12 @@ export async function updateCampaignAdHandler(
 
     if (ad.campaign.toString() !== campaignId) {
         return res.sendStatus(StatusCodes.FORBIDDEN)
+    }
+
+    //todo: update image in spaces
+    let imageName = undefined
+    if (image) {
+
     }
 
     const updated = await updateCampaignAd(ad, location, imageName)
