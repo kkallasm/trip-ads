@@ -1,0 +1,16 @@
+version: "3"
+services:
+  express:
+    environment:
+      - NODE_ENV=development
+    build:
+      context: .
+      #dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/usr/app
+    container_name: trip-ads
+    #expose:
+    #  - "4000"
+    ports:
+      - "8888:8888"
+    command: npm run dev
