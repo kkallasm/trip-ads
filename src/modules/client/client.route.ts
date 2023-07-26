@@ -6,8 +6,8 @@ import {
     getClientsHandler,
     updateClientsHandler,
 } from './client.controller'
-import {validateRequestBody} from '../../middleware/validateRequest'
 import { clientSchema } from './client.schema'
+import { validateRequestBody } from "../../middleware/validateRequest";
 
 const router = express.Router()
 
