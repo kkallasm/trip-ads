@@ -1,4 +1,4 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express'
 import dotenv from 'dotenv'
 import adsRouter from './modules/ads/ads.route'
 import clientRouter from './modules/client/client.route'
@@ -35,19 +35,19 @@ app.use('/ping', (req: Request, res: Response) =>
     res.status(StatusCodes.OK).json('pong')
 )
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     return res.status(StatusCodes.NOT_FOUND).json({
         status: 404,
-        message: 'Route not found'
-    });
-});
+        message: 'Route not found',
+    })
+})
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: 500,
         message: error?.message,
-    });
-});
+    })
+})
 
 app.listen(port, async () => {
     await connectToDatabase()
