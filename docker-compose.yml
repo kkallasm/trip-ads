@@ -4,13 +4,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      #args:
-      #  - NODE_ENV=development
     volumes:
       - ./:/usr/app
     env_file: .env
     container_name: trip-ads
     restart: always
     ports:
-      - "8888:8888"
-    #command: npm run dev
+      - "${PORT}:${PORT}"
