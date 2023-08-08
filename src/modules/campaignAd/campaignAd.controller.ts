@@ -3,19 +3,19 @@ import { StatusCodes } from 'http-status-codes'
 import {
     createCampaignAd,
     getAdsByCampaignId,
-    updateCampaignAd,
-    uploadImageToDOSpaces
+    updateCampaignAd
 } from "./campaignAd.service";
 import {
-    campaignAdRequestParams,
-    campaignAdAddRequestBodyType,
-    campaignAdUpdateRequestBodyType
+    campaignAdAddRequestType,
+    campaignAdUpdateRequestType
 } from "./campaignAd.schema";
 import { getCampaign, syncCampaignAds } from "../campaign/campaign.service";
 import { getAdById } from "../ads/ads.service";
+import { UploadedFile } from "express-fileupload";
+import { uploadFileToSpaces } from "../../utils/fileUpload";
 
 export async function getCampaignAdsHandler(
-  req: Request<campaignAdRequestParams>,
+  req: Request<campaignAdAddRequestType["params"]>,
   res: Response,
   next: any
 ) {
@@ -34,13 +34,12 @@ export async function getCampaignAdsHandler(
 }
 
 export async function createCampaignAdHandler(
-  req: Request<campaignAdRequestParams, {}, campaignAdAddRequestBodyType>,
+  req: Request<campaignAdAddRequestType["params"], {}, campaignAdAddRequestType["body"]>,
   res: Response
 ) {
     const { campaignId } = req.params
-    const { location, image } = req.body
-
-    console.log(req.params, req.body)
+    const { location } = req.body
+    const image = req.files?.image as UploadedFile
 
     try {
         const campaign = await getCampaign(campaignId)
@@ -48,13 +47,12 @@ export async function createCampaignAdHandler(
             return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
         }
 
-        //todo: insert image to spaces
-        const imageName = await uploadImageToDOSpaces({ image: image})
+        const fileName = await uploadFileToSpaces(image)
 
         const ad = await createCampaignAd({
             campaign: campaign,
             location: location,
-            imageName: imageName,
+            imageName: fileName,
         })
 
         await syncCampaignAds(campaign, ad)
@@ -70,11 +68,11 @@ export async function createCampaignAdHandler(
 }
 
 export async function updateCampaignAdHandler(
-  req: Request<{ campaignId: string; adId: string }, {}, campaignAdUpdateRequestBodyType>,
+  req: Request<campaignAdUpdateRequestType["params"], {}, campaignAdUpdateRequestType["body"]>,
   res: Response
 ) {
     const { campaignId, adId } = req.params
-    const { location, image } = req.body
+    const { location } = req.body
 
     const ad = await getAdById(adId)
     if (!ad) {
@@ -87,9 +85,9 @@ export async function updateCampaignAdHandler(
 
     //todo: update image in spaces
     let imageName = undefined
-    if (image) {
+    /*if (image) {
 
-    }
+    }*/
 
     const updated = await updateCampaignAd(ad, location, imageName)
     return res.status(StatusCodes.OK).send(updated)

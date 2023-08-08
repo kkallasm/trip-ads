@@ -8,6 +8,7 @@ import { connectToDatabase } from './utils/db'
 import { StatusCodes } from 'http-status-codes'
 import campaignRoute from './modules/campaign/campaign.route'
 import logger from './utils/logger'
+import fileUpload from 'express-fileupload'
 
 dotenv.config()
 
@@ -15,6 +16,14 @@ const app: Express = express()
 const port = process.env.PORT
 
 app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(fileUpload({
+    limits: {
+        fileSize: 1024 * 200 // 200Kb
+    },
+    abortOnLimit: true
+}))
+
 app.use(
     cors({
         origin: 'http://localhost:3000',
