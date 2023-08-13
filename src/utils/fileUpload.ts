@@ -19,7 +19,7 @@ export async function uploadFileToSpaces(image: UploadedFile) {
     const imageName = uuidv4() + '.' + fileExt
     const params = {
         Bucket: 'trip-ads-spaces',
-        Key: 'desktop/' + imageName,
+        Key: imageName,
         Body: image.data,
         ACL: 'public-read',
         ContentType: image.mimetype,

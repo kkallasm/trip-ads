@@ -1,6 +1,5 @@
-import { CampaignAd, CampaignAdModel, EnumAdLocation } from "./campaignAd.model";
+import { CampaignAd, CampaignAdModel, EnumAdLocation, EnumAdLocationType } from "./campaignAd.model";
 import { Campaign } from '../campaign/campaign.model'
-import { UploadedFile } from "express-fileupload";
 
 export async function getAdsByCampaignId(campaignId: string) {
   return CampaignAdModel.find({ campaign: campaignId }).lean()
@@ -12,7 +11,7 @@ export function createCampaignAd({
     imageName,
 }: {
     campaign: Campaign
-    location: EnumAdLocation
+    location: keyof typeof EnumAdLocation
     imageName: string
 }) {
     return CampaignAdModel.create({
@@ -24,11 +23,11 @@ export function createCampaignAd({
 
 export async function updateCampaignAd(
   ad: CampaignAd,
-  location: EnumAdLocation,
+  location: keyof typeof EnumAdLocation,
   imageName?: string
 ) {
     const values = {
-        location: location
+        locationCode: location
     }
 
     if (imageName) {

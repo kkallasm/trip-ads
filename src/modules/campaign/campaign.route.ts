@@ -6,7 +6,7 @@ import {
     updateCampaignHandler,
 } from './campaign.controller'
 import { validateRequest } from "../../middleware/validateRequest";
-import { campaignSchemaBody } from './campaign.schema'
+import { campaignAddSchema, campaignUpdateSchema } from './campaign.schema'
 import {
     createCampaignAdHandler,
     getCampaignAdsHandler,
@@ -19,9 +19,9 @@ import {
 const router = express.Router()
 
 router.get('/', getCampaignsHandler)
-router.post('/', validateRequest(campaignSchemaBody), createCampaignHandler)
+router.post('/', validateRequest(campaignAddSchema), createCampaignHandler)
 router.get('/:campaignId', getCampaignHandler)
-router.patch('/:campaignId', validateRequest(campaignSchemaBody), updateCampaignHandler)
+router.patch('/:campaignId', validateRequest(campaignUpdateSchema), updateCampaignHandler)
 
 router.get('/:campaignId/ads', getCampaignAdsHandler)
 router.post('/:campaignId/ads', validateRequest(campaignAdAddSchema), createCampaignAdHandler)

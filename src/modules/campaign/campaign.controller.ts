@@ -6,7 +6,7 @@ import {
     getCampaigns,
     updateCampaign
 } from './campaign.service';
-import { campaignRequestParams, campaignRequestBody } from './campaign.schema';
+import { campaignAddRequest, campaignUpdateRequest } from './campaign.schema';
 import {getClients} from "../client/client.service";
 
 export async function getCampaignsHandler(req: Request, res: Response) {
@@ -19,7 +19,7 @@ export async function getCampaignsHandler(req: Request, res: Response) {
 }
 
 export async function getCampaignHandler(
-    req: Request<campaignRequestParams>,
+    req: Request<{campaignId: string}>,
     res: Response
 ) {
     const { campaignId } = req.params
@@ -32,7 +32,7 @@ export async function getCampaignHandler(
 }
 
 export async function createCampaignHandler(
-    req: Request<{}, {}, campaignRequestBody>,
+    req: Request<{}, {}, campaignAddRequest['body']>,
     res: Response
 ) {
     try {
@@ -53,7 +53,7 @@ export async function createCampaignHandler(
 }
 
 export async function updateCampaignHandler(
-    req: Request<campaignRequestParams, {}, campaignRequestBody>,
+    req: Request<campaignUpdateRequest['params'], {}, campaignUpdateRequest['body']>,
     res: Response
 ) {
     const { campaignId } = req.params

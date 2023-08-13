@@ -2,7 +2,7 @@ import { object, string, TypeOf, z } from 'zod'
 import { EnumAdLocation } from './campaignAd.model'
 import { UploadedFile } from 'express-fileupload'
 
-const MAX_FILE_SIZE = 500000
+const MAX_FILE_SIZE = 150000
 const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
     'image/jpg',
@@ -17,7 +17,7 @@ const imageRule = z
             return file.size <= MAX_FILE_SIZE
         },
         {
-            message: 'Max image size is 500KB.',
+            message: 'Max image size is 150KB.',
         }
     )
     .refine(
@@ -27,12 +27,14 @@ const imageRule = z
         }
     )
 
+const keys = Object.keys(EnumAdLocation) as [keyof typeof EnumAdLocation]
+
 export const campaignAdAddSchema = object({
     params: object({
         campaignId: string(),
     }),
     body: object({
-        location: z.nativeEnum(EnumAdLocation, {
+        location: z.enum(keys, {
             required_error: 'Asukoht puudu',
         }),
     }),
@@ -51,10 +53,5 @@ export const campaignAdUpdateSchema = campaignAdAddSchema.extend({
     }),
 })
 
-export const campaignAdSchemaParams = object({
-    campaignId: string(),
-})
-
 export type campaignAdAddRequestType = TypeOf<typeof campaignAdAddSchema>
 export type campaignAdUpdateRequestType = TypeOf<typeof campaignAdUpdateSchema>
-export type campaignAdRequestParams = TypeOf<typeof campaignAdSchemaParams>

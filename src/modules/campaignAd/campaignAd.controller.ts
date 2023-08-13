@@ -60,7 +60,13 @@ export async function createCampaignAdHandler(
         return res.status(StatusCodes.OK).send(ad)
     } catch (e: any) {
         if (e?.code === 11000) {
-            return res.status(StatusCodes.CONFLICT).send('Ad with location "' + location + '" already exists')
+            return res.status(StatusCodes.CONFLICT).send({
+                'errors': {
+                    'location': [
+                        'Ad with location "' + location + '" already exists'
+                    ]
+                }
+            })
         } else {
             return res.status(StatusCodes.CONFLICT).send(e?.message)
         }

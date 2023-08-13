@@ -19,7 +19,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(fileUpload({
     limits: {
-        fileSize: 1024 * 200 // 200Kb
+        fileSize: 1024 * 150 // 150Kb
     },
     abortOnLimit: true
 }))
