@@ -18,7 +18,7 @@ export const campaignSchema = new Schema(
     {
         name: { type: String, required: true, trim: true },
         client: { type: Schema.Types.ObjectId, ref: 'Client' },
-        startDate: { type: Date, required: true  },
+        startDate: { type: Date, required: true },
         endDate: { type: Date, required: true },
         url: { type: String, required: true, trim: true },
         //ads: [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],

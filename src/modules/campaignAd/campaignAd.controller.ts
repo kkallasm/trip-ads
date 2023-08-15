@@ -50,7 +50,7 @@ export async function createCampaignAdHandler(
         const fileName = await uploadFileToSpaces(image)
 
         const ad = await createCampaignAd({
-            campaign: campaign,
+            campaignId: campaignId,
             location: location,
             imageName: fileName,
         })
@@ -85,7 +85,7 @@ export async function updateCampaignAdHandler(
         return res.sendStatus(StatusCodes.NOT_FOUND)
     }
 
-    if (ad.campaign.toString() !== campaignId) {
+    if (ad.campaignId !== campaignId) {
         return res.sendStatus(StatusCodes.FORBIDDEN)
     }
 

@@ -14,13 +14,14 @@ export enum EnumAdLocation {
 export type EnumAdLocationType = keyof typeof EnumAdLocation
 
 export interface CampaignAd extends mongoose.Document {
-    campaign: Campaign | string
+    campaignId: string
     location: EnumAdLocationType
     imageName: string
+    active: boolean
 }
 
 export const campaignAdSchema = new Schema({
-    campaign : { type: Schema.Types.ObjectId, ref: 'Campaign', required: true, index: true },
+    campaignId: { type: Schema.Types.ObjectId, ref: 'Campaign', required: true, index: true },
     location: { type: String, required: true, enum: Object.keys(EnumAdLocation), index: true },
     imageName: { type: String, required: true },
     active: { type: Boolean, required: true, default: true, index: true },

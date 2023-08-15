@@ -6,16 +6,16 @@ export async function getAdsByCampaignId(campaignId: string) {
 }
 
 export function createCampaignAd({
-    campaign,
+    campaignId,
     location,
     imageName,
 }: {
-    campaign: Campaign
+    campaignId: string
     location: keyof typeof EnumAdLocation
     imageName: string
 }) {
     return CampaignAdModel.create({
-        campaign,
+        campaignId,
         location,
         imageName,
     })
