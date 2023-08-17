@@ -8,8 +8,7 @@ export interface Campaign extends mongoose.Document {
     startDate: Date
     endDate: Date
     url: string
-    ads?: (CampaignAd | string)[]
-    //locations?: (EnumAdLocation | string)[]
+    ads?: CampaignAd[]
     createdAt: Date
     updatedAt: Date
 }
@@ -21,9 +20,7 @@ export const campaignSchema = new Schema(
         startDate: { type: Date, required: true },
         endDate: { type: Date, required: true },
         url: { type: String, required: true, trim: true },
-        //ads: [{ type: Schema.Types.ObjectId, ref: 'CampaignAd' }],
-        ads: [{ type: campaignAdSchema }],
-        //locations: [{ type: String, required: false }],
+        ads: [{ type: campaignAdSchema }]
     },
     {
         timestamps: true,

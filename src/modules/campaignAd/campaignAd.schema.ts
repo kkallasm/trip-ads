@@ -53,5 +53,16 @@ export const campaignAdUpdateSchema = campaignAdAddSchema.extend({
     }),
 })
 
+export const campaignAdActiveSchema = object({
+    params: object({
+        campaignId: string(),
+        adId: string(),
+    }),
+    body: object({
+        active: z.boolean(),
+    }),
+})
+
 export type campaignAdAddRequestType = TypeOf<typeof campaignAdAddSchema>
 export type campaignAdUpdateRequestType = TypeOf<typeof campaignAdUpdateSchema>
+export type campaignAdActiveRequestType = TypeOf<typeof campaignAdActiveSchema>

@@ -1,5 +1,6 @@
-import { Campaign, CampaignModel } from './campaign.model';
-import { EnumAdLocation, CampaignAd } from '../campaignAd/campaignAd.model';
+import { CampaignModel } from './campaign.model';
+import { EnumAdLocation, CampaignAd } from "../campaignAd/campaignAd.model";
+import { getAdsByCampaignId } from "../campaignAd/campaignAd.service";
 
 export function createCampaign({
     name,
@@ -38,12 +39,21 @@ export async function updateCampaignLocations(
     })
 }
 
-export async function syncCampaignAds(
-    campaign: Campaign,
+export async function syncCampaignAdsOLD(
+    campaignId: string,
     ad: CampaignAd
 ) {
-    return CampaignModel.findByIdAndUpdate(campaign.id, {
+    return CampaignModel.findByIdAndUpdate(campaignId, {
         $addToSet: { ads: ad.toObject() }
+    })
+}
+
+export async function syncCampaignAds(
+  campaignId: string
+) {
+    const ads = await getAdsByCampaignId(campaignId)
+    return CampaignModel.findByIdAndUpdate(campaignId, {
+        $set: { ads: ads }
     })
 }
 

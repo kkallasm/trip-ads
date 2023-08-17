@@ -3,10 +3,12 @@ import { StatusCodes } from 'http-status-codes'
 import {
     createCampaignAd,
     getAdsByCampaignId,
+    setCampaignAdActive,
     updateCampaignAd
 } from "./campaignAd.service";
 import {
     campaignAdAddRequestType,
+    campaignAdActiveRequestType,
     campaignAdUpdateRequestType
 } from "./campaignAd.schema";
 import { getCampaign, syncCampaignAds } from "../campaign/campaign.service";
@@ -55,7 +57,7 @@ export async function createCampaignAdHandler(
             imageName: fileName,
         })
 
-        await syncCampaignAds(campaign, ad)
+        await syncCampaignAds(campaignId)
 
         return res.status(StatusCodes.OK).send(ad)
     } catch (e: any) {
@@ -80,21 +82,49 @@ export async function updateCampaignAdHandler(
     const { campaignId, adId } = req.params
     const { location } = req.body
 
+    try {
+        const ad = await getAdById(adId)
+        if (!ad) {
+            return res.sendStatus(StatusCodes.NOT_FOUND)
+        }
+
+        if (ad.campaignId.toString() !== campaignId) {
+            return res.sendStatus(StatusCodes.FORBIDDEN)
+        }
+
+        //todo: update image in spaces
+        let imageName = undefined
+        /*if (image) {
+
+        }*/
+
+        const updated = await updateCampaignAd(ad, location, imageName)
+
+        await syncCampaignAds(ad.campaignId)
+
+        return res.status(StatusCodes.OK).send(updated)
+    } catch (e: any) {
+        return res.status(StatusCodes.CONFLICT).send(e?.message)
+    }
+}
+
+export async function setCampaignAdActiveHandler(
+  req: Request<campaignAdActiveRequestType["params"], {}, campaignAdActiveRequestType["body"]>,
+  res: Response
+) {
+    const { campaignId, adId } = req.params
+    const { active } = req.body
+
     const ad = await getAdById(adId)
     if (!ad) {
         return res.sendStatus(StatusCodes.NOT_FOUND)
     }
 
-    if (ad.campaignId !== campaignId) {
+    if (ad.campaignId.toString() !== campaignId) {
         return res.sendStatus(StatusCodes.FORBIDDEN)
     }
 
-    //todo: update image in spaces
-    let imageName = undefined
-    /*if (image) {
+    const updated = await setCampaignAdActive(ad, active)
 
-    }*/
-
-    const updated = await updateCampaignAd(ad, location, imageName)
     return res.status(StatusCodes.OK).send(updated)
 }

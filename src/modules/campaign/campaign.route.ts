@@ -10,10 +10,12 @@ import { campaignAddSchema, campaignUpdateSchema } from './campaign.schema'
 import {
     createCampaignAdHandler,
     getCampaignAdsHandler,
-    updateCampaignAdHandler,
-} from '../campaignAd/campaignAd.controller'
+    setCampaignAdActiveHandler,
+    updateCampaignAdHandler
+} from "../campaignAd/campaignAd.controller";
 import {
     campaignAdAddSchema,
+    campaignAdActiveSchema,
     campaignAdUpdateSchema
 } from "../campaignAd/campaignAd.schema";
 const router = express.Router()
@@ -26,5 +28,6 @@ router.patch('/:campaignId', validateRequest(campaignUpdateSchema), updateCampai
 router.get('/:campaignId/ads', getCampaignAdsHandler)
 router.post('/:campaignId/ads', validateRequest(campaignAdAddSchema), createCampaignAdHandler)
 router.patch('/:campaignId/ads/:adId', validateRequest(campaignAdUpdateSchema), updateCampaignAdHandler)
+router.patch('/:campaignId/ads/:adId/active', validateRequest(campaignAdActiveSchema), setCampaignAdActiveHandler)
 
 export default router
