@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import { Client, ClientModel } from '../client/client.model';
-import { CampaignAd, campaignAdSchema } from '../campaignAd/campaignAd.model';
+import { CampaignAd, CampaignAdModel, campaignAdSchema } from "../campaignAd/campaignAd.model";
 
 export interface Campaign extends mongoose.Document {
     name: string
@@ -41,7 +41,11 @@ campaignSchema.pre('save', async function(next) {
     if (!client) {
         next(new Error('Client not found'))
     }
+    next()
+})
 
+campaignSchema.pre('deleteOne', {document: true, query: false}, async function(next) {
+    await CampaignAdModel.deleteMany({campaignId: this._id})
     next()
 })
 
