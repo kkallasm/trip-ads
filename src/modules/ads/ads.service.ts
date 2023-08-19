@@ -8,7 +8,7 @@ export async function getActiveAdsByLocation(location: EnumAdLocationType): Prom
         startDate: { $lte: today },
         endDate: { $gte: today },
         ads: { $elemMatch: { location: location, active: true } },
-    }, { "ads": 1 }).select(["ads"]).lean()
+    }, { "ads": 1 }).select(["ads"])
 
     if (!campaigns) {
         return []
