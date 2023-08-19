@@ -1,11 +1,26 @@
-import { CampaignModel } from '../campaign/campaign.model'
+import { Campaign, CampaignModel } from "../campaign/campaign.model";
 import { StatsModel } from '../stats/stats.model'
-import { CampaignAdModel } from "../campaignAd/campaignAd.model";
+import { CampaignAd, CampaignAdModel, EnumAdLocationType } from "../campaignAd/campaignAd.model";
 
-export async function getActiveCampaignsByLocation(location: string) {
-    return CampaignModel.find({
-        ads: { $elemMatch: { location: location } },
-    }).lean()
+export async function getActiveAdsByLocation(location: EnumAdLocationType): Promise<CampaignAd[]> {
+    const today = new Date().toDateString()
+    const campaigns = await CampaignModel.find({
+        startDate: { $lte: today },
+        endDate: { $gte: today },
+        ads: { $elemMatch: { location: location, active: true } },
+    }, { "ads": 1 }).select(["ads"]).lean()
+
+    if (!campaigns) {
+        return []
+    }
+
+    let ads: CampaignAd[] = []
+    campaigns.map((campaign: Campaign) => {
+        // @ts-ignore
+        ads.push(...campaign.ads?.filter(ad => ad.location === location))
+    })
+
+    return ads
 }
 
 export async function addAdImpression(

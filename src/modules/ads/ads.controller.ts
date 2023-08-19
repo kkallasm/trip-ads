@@ -3,17 +3,25 @@ import { StatusCodes } from 'http-status-codes'
 import {
     addAdClick,
     addAdImpression,
-    getActiveCampaignsByLocation,
-    getCampaignByAdId,
-} from './ads.service'
+    getActiveAdsByLocation,
+    getCampaignByAdId
+} from "./ads.service";
+import { EnumAdLocationType } from "../campaignAd/campaignAd.model";
 
 export async function getAdsHandler(
-    req: Request<{ location: string }>,
+    req: Request<{ location: EnumAdLocationType }>,
     res: Response
 ) {
     const { location } = req.params
-    const ads = await getActiveCampaignsByLocation(location)
-    return res.status(StatusCodes.OK).send(ads)
+    const ads = await getActiveAdsByLocation(location)
+    if (!ads)
+        return res.status(StatusCodes.OK).send(false)
+
+    if (ads.length === 1) {
+        return res.status(StatusCodes.OK).send(ads[0])
+    } else {
+        return res.status(StatusCodes.OK).send(ads[(Math.floor(Math.random() * ads.length))])
+    }
 }
 
 export async function adImpressionHandler(

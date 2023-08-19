@@ -39,15 +39,6 @@ export async function updateCampaignLocations(
     })
 }
 
-export async function syncCampaignAdsOLD(
-    campaignId: string,
-    ad: CampaignAd
-) {
-    return CampaignModel.findByIdAndUpdate(campaignId, {
-        $addToSet: { ads: ad.toObject() }
-    })
-}
-
 export async function syncCampaignAds(
   campaignId: string
 ) {

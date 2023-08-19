@@ -39,6 +39,6 @@ export const campaignAdSchema = new Schema({
     }
 })
 
-campaignAdSchema.index({campaign: 1, location: 1}, {unique: true})
+campaignAdSchema.index({campaignId: 1, location: 1}, {unique: true})
 
 export const CampaignAdModel = mongoose.model<CampaignAd>('CampaignAd', campaignAdSchema)
