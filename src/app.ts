@@ -35,7 +35,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Trip.ee Ads API')
 })
 
-app.use('/api/ads', adsRouter)
+app.use('/api/maasikas', adsRouter)
 app.use('/api/clients', clientRouter)
 app.use('/api/campaigns', campaignRoute)
 
