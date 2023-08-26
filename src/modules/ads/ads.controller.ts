@@ -25,14 +25,12 @@ export async function getAdsHandler(
 }
 
 export async function adImpressionHandler(
-    req: Request<{ adId: string }, {}, { campaignId: string; data: any }>,
+    req: Request<{ adId: string }, {}, {}>,
     res: Response
 ) {
     try {
         const { adId } = req.params
-        const { campaignId, data } = req.body
-
-        await addAdImpression(adId, campaignId, data)
+        await addAdImpression(adId)
         return res.status(StatusCodes.OK).send('success')
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)

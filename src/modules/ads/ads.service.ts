@@ -1,29 +1,39 @@
 import { Campaign, CampaignModel } from "../campaign/campaign.model";
 import { StatsModel } from '../stats/stats.model'
 import { CampaignAd, CampaignAdModel, EnumAdLocationType } from "../campaignAd/campaignAd.model";
+import { AdStatsModel } from "../adStats/adStats.model";
 
-export async function getActiveAdsByLocation(location: EnumAdLocationType): Promise<CampaignAd[]> {
+export type CampaignAdWithUrl = CampaignAd & {
+    url: string
+}
+
+export async function getActiveAdsByLocation(location: EnumAdLocationType): Promise<CampaignAdWithUrl[]> {
     const today = new Date().toDateString()
     const campaigns = await CampaignModel.find({
         startDate: { $lte: today },
         endDate: { $gte: today },
         ads: { $elemMatch: { location: location, active: true } },
-    }, { "ads": 1 }).select(["ads"])
+    }, { "ads": 1 }).select(['ads', 'url'])
 
     if (!campaigns) {
         return []
     }
 
-    let ads: CampaignAd[] = []
+    let ads: CampaignAdWithUrl[] = []
     campaigns.map((campaign: Campaign) => {
-        // @ts-ignore
-        ads.push(...campaign.ads?.filter(ad => ad.location === location))
+        const filtered = campaign.ads?.filter(ad => ad.location === location)
+        if (filtered) {
+            const res: CampaignAdWithUrl[] = filtered?.map(f => {
+                return {...f.toJSON(), url: process.env.APP_URL + '/api/maasikas/' + f._id + '/click'}
+            })
+            ads.push(...res)
+        }
     })
 
     return ads
 }
 
-export async function addAdImpression(
+export async function addAdImpressionOLD(
     adId: string,
     campaignId: string,
     data?: any
@@ -34,6 +44,16 @@ export async function addAdImpression(
         action: 'view',
         data: data,
     })
+}
+
+export async function addAdImpression(
+  adId: string
+) {
+    return AdStatsModel.updateOne(
+      { adId: adId },
+      { $inc: { impressions: +1 } },
+      { upsert: true }
+    )
 }
 
 export async function addAdClick(adId: string, campaignId: string, data?: any) {

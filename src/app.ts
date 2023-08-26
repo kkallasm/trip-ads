@@ -24,6 +24,8 @@ app.use(fileUpload({
     abortOnLimit: true
 }))
 
+app.use(express.static('public'))
+
 app.use(
     cors({
         origin: 'http://localhost:3000',

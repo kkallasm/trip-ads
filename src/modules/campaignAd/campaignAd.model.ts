@@ -1,5 +1,4 @@
 import mongoose, {Schema} from 'mongoose'
-import { Campaign } from '../campaign/campaign.model'
 
 export enum EnumAdLocation {
     desktop_body = 'DESKTOP 720x120 Sisubänner',
