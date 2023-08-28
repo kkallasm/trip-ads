@@ -24,6 +24,8 @@ app.use(fileUpload({
     abortOnLimit: true
 }))
 
+//todo: compression ?
+
 app.use(express.static('public'))
 
 app.use(
@@ -61,6 +63,6 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
 })
 
 app.listen(port, async () => {
-    await connectToDatabase()
+    //await connectToDatabase()
     logger.info(`Server listening at http://localhost:${port}`)
 })

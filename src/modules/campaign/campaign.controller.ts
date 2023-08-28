@@ -7,15 +7,16 @@ import {
     updateCampaign
 } from './campaign.service';
 import { campaignAddRequest, campaignUpdateRequest } from './campaign.schema';
-import {getClients} from "../client/client.service";
+import { db } from "../../utils/database";
 
 export async function getCampaignsHandler(req: Request, res: Response) {
-    const campaigns = await getCampaigns()
-    const clients = await getClients()
-    return res.status(StatusCodes.OK).send({
-        campaigns: campaigns,
-        clients: clients
-    })
+    const persons = await db
+      .selectFrom('person')
+      .select('id')
+      .where('first_name', '=', 'Arnold')
+      .execute()
+
+    return res.status(StatusCodes.OK).send(persons)
 }
 
 export async function getCampaignHandler(

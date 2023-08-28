@@ -6,11 +6,13 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node build/app.js",
-    "dev": "nodemon --exec ts-node ./src/app.ts"
+    "dev": "nodemon --exec ts-node ./src/app.ts",
+    "migrate": "npx tsc && node -r dotenv/config build/scripts/migrateToLatest.js"
   },
   "author": "Kaspar Kallasmaa",
   "license": "",
   "dependencies": {
+    "@types/pg": "^8.10.2",
     "aws-sdk": "^2.1431.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -18,7 +20,9 @@
     "express-fileupload": "^1.4.0",
     "helmet": "^7.0.0",
     "http-status-codes": "^2.2.0",
+    "kysely": "^0.26.2",
     "mongoose": "^7.4.1",
+    "pg": "^8.11.3",
     "pino": "^8.1.0",
     "uuid": "^9.0.0",
     "zod": "^3.17.3"
