@@ -7,12 +7,12 @@
     "build": "npx tsc",
     "start": "node build/app.js",
     "dev": "nodemon --exec ts-node ./src/app.ts",
-    "migrate": "npx tsc && node -r dotenv/config build/scripts/migrateToLatest.js"
+    "migrate": "npx tsc && node -r dotenv/config build/scripts/migrateToLatest.js",
+    "migrate_down": "npx tsc && node -r dotenv/config build/scripts/migrateOneDown.js"
   },
   "author": "Kaspar Kallasmaa",
   "license": "",
   "dependencies": {
-    "@types/pg": "^8.10.2",
     "aws-sdk": "^2.1431.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -28,6 +28,7 @@
     "zod": "^3.17.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.10.2",
     "@typegoose/typegoose": "^11.4.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",

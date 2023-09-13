@@ -10,13 +10,14 @@ import { campaignAddRequest, campaignUpdateRequest } from './campaign.schema';
 import { db } from "../../utils/database";
 
 export async function getCampaignsHandler(req: Request, res: Response) {
-    const persons = await db
-      .selectFrom('person')
-      .select('id')
-      .where('first_name', '=', 'Arnold')
+    const campaigns = await db
+      .selectFrom('campaigns')
+      .innerJoin('clients', 'clients.id', 'campaigns.client_id')
+      //.select('id')
+      //.where('first_name', '=', 'Arnold')
       .execute()
 
-    return res.status(StatusCodes.OK).send(persons)
+    return res.status(StatusCodes.OK).send(campaigns)
 }
 
 export async function getCampaignHandler(
