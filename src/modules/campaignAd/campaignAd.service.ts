@@ -1,5 +1,4 @@
 import { CampaignAd, CampaignAdModel, EnumAdLocation } from "./campaignAd.model";
-import { CampaignModel } from "../campaign/campaign.model";
 
 export async function getAdsByCampaignId(campaignId: string) {
   return CampaignAdModel.find({ campaignId: campaignId }).lean()
@@ -42,11 +41,11 @@ export async function setCampaignAdActive(
   active: boolean
 ) {
     const updatedAd = await CampaignAdModel.findByIdAndUpdate(ad.id, { active: active }, { new: true })
-    await CampaignModel.updateOne(
+    /*await CampaignModel.updateOne(
       { _id: ad.campaignId, "ads._id": ad.id },
       { $set: { "ads.$.active": active } },
       { new: true }
-    )
+    )*/
 
     return updatedAd
 }

@@ -41,7 +41,7 @@ export async function adClickHandler(
     req: Request<{ adId: string }, {}, {}>,
     res: Response
 ) {
-    try {
+    /*try {
         const { adId } = req.params
         const campaign = await getCampaignByAdId(adId)
         if (campaign) {
@@ -50,5 +50,7 @@ export async function adClickHandler(
         } else return res.sendStatus(StatusCodes.CONFLICT)
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
-    }
+    }*/
+
+    return res.status(StatusCodes.OK).send('todo')
 }

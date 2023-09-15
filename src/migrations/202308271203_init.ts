@@ -14,6 +14,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('campaigns')
     .addColumn('id', 'serial', (col) => col.primaryKey())
+    .addColumn('name', 'varchar', (col) => col.notNull())
     .addColumn('client_id', 'integer', (col) => col.references('clients.id').onDelete('cascade').notNull())
     .addColumn('start_date', 'timestamp', (col) =>
       col.notNull()

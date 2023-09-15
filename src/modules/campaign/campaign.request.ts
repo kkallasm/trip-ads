@@ -1,4 +1,4 @@
-import { object, string, TypeOf, z } from "zod";
+import { number, object, string, TypeOf, z } from "zod";
 
 const checkValidDates = (startDate: string, endDate: string) => {
     const start = new Date(startDate)
@@ -11,7 +11,7 @@ export const campaignAddSchema = object({
         name: string({
             required_error: "Nimi on nõutud",
         }),
-        clientId: string({
+        clientId: number({
             required_error: "Klient on puudu",
         }),
         startDate: string({

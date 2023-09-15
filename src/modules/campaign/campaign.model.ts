@@ -1,55 +1,35 @@
-import mongoose, { Schema } from 'mongoose'
-import { Client, ClientModel } from '../client/client.model';
-import { CampaignAd, CampaignAdModel, campaignAdSchema } from "../campaignAd/campaignAd.model";
-
-export interface Campaign extends mongoose.Document {
+interface Client {
+    id: number
     name: string
-    client: Client | string
-    startDate: Date
-    endDate: Date
-    url: string
-    ads?: CampaignAd[]
-    createdAt: Date
-    updatedAt: Date
 }
 
-export const campaignSchema = new Schema(
-    {
-        name: { type: String, required: true, trim: true },
-        client: { type: Schema.Types.ObjectId, ref: 'Client' },
-        startDate: { type: Date, required: true },
-        endDate: { type: Date, required: true },
-        url: { type: String, required: true, trim: true },
-        ads: [{ type: campaignAdSchema }]
-    },
-    {
-        timestamps: true,
-        versionKey: false,
-        toJSON: {
-            transform(doc, ret) {
-                ret.id = ret._id
-                delete ret._id
-                delete ret.__v
-                return ret
-            }
+export interface CampaignResponse {
+    id: number
+    name: string
+    client_id: number
+    client_name: string
+    start_date: string
+    end_date: string
+    url: string
+    created_at: string
+}
+
+export class Campaign {
+    id: number
+    name: string
+    client: Client
+    startDate: string
+    endDate: string
+    url: string
+    constructor({ id, name, client_id, client_name, start_date, end_date, url }: CampaignResponse) {
+        this.id = id
+        this.name = name
+        this.startDate = start_date
+        this.endDate = end_date
+        this.url = url
+        this.client = {
+            id: client_id,
+            name: client_name
         }
     }
-)
-
-campaignSchema.pre('save', async function(next) {
-    const client = await ClientModel.findById(this.client)
-    if (!client) {
-        next(new Error('Client not found'))
-    }
-    next()
-})
-
-campaignSchema.pre('deleteOne', {document: true, query: false}, async function(next) {
-    await CampaignAdModel.deleteMany({campaignId: this._id})
-    next()
-})
-
-export const CampaignModel = mongoose.model<Campaign>(
-    'Campaign',
-    campaignSchema
-)
+}

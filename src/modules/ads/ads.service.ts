@@ -1,4 +1,4 @@
-import { Campaign, CampaignModel } from "../campaign/campaign.model";
+import { Campaign } from "../campaign/campaign.model";
 import { StatsModel } from '../stats/stats.model'
 import { CampaignAd, CampaignAdModel, EnumAdLocationType } from "../campaignAd/campaignAd.model";
 import { AdStatsModel } from "../adStats/adStats.model";
@@ -8,7 +8,8 @@ export type CampaignAdWithUrl = CampaignAd & {
 }
 
 export async function getActiveAdsByLocation(location: EnumAdLocationType): Promise<CampaignAdWithUrl[]> {
-    const today = new Date().toDateString()
+    const ads: any = []
+    /*const today = new Date().toDateString()
     const campaigns = await CampaignModel.find({
         startDate: { $lte: today },
         endDate: { $gte: today },
@@ -28,7 +29,7 @@ export async function getActiveAdsByLocation(location: EnumAdLocationType): Prom
             })
             ads.push(...res)
         }
-    })
+    })*/
 
     return ads
 }
@@ -70,5 +71,6 @@ export function getAdById(adId: string) {
 }
 
 export async function getCampaignByAdId(adId: string) {
-    return CampaignModel.findOne({ ads: { $elemMatch: { _id: adId } } }).lean()
+    //return CampaignModel.findOne({ ads: { $elemMatch: { _id: adId } } }).lean()
+    return true
 }

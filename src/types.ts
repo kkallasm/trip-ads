@@ -7,17 +7,18 @@ export interface Database {
 
 export interface CampaignsTable {
   id: Generated<number>
+  name: string
   client_id: number
-  start_date: Date
-  end_date: Date
+  start_date: ColumnType<string, string, string>
+  end_date: ColumnType<string, string, string>
   url: string
-  created_at: ColumnType<Date, string | undefined, never>
+  created_at: ColumnType<string, string | undefined, never>
 }
 
 // You should not use the table schema interfaces directly. Instead, you should
 // use the `Selectable`, `Insertable` and `Updateable` wrappers. These wrappers
 // make sure that the correct types are used in each operation.
-export type Campaign = Selectable<CampaignsTable>
+export type CampaignSelectable = Selectable<CampaignsTable>
 export type NewCampaign = Insertable<CampaignsTable>
 export type CampaignUpdate = Updateable<CampaignsTable>
 
