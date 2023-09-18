@@ -1,7 +1,5 @@
-interface Client {
-    id: number
-    name: string
-}
+import { Client } from "../client/client.model";
+import { AdSelectable, EnumAdLocation, EnumAdLocationType } from "../../types";
 
 export interface CampaignResponse {
     id: number
@@ -14,6 +12,27 @@ export interface CampaignResponse {
     created_at: string
 }
 
+export type AdSelectableWithUrl = AdSelectable & {
+    url: string
+}
+
+export class CampaignAd {
+    id: number
+    campaignId: number
+    imageUrl: string
+    locationName: string
+    url: string
+    active: boolean
+    constructor({ id, campaign_id, image_name, location, active }: AdSelectable) {
+        this.id = id
+        this.campaignId = campaign_id
+        this.imageUrl = process.env.ADS_IMAGE_URL + '/' + image_name
+        this.locationName = EnumAdLocation[location as EnumAdLocationType]
+        this.url = process.env.APP_URL + '/api/maasikas/' + id + '/c/' + campaign_id + '/click'
+        this.active = active
+    }
+}
+
 export class Campaign {
     id: number
     name: string
@@ -21,6 +40,7 @@ export class Campaign {
     startDate: string
     endDate: string
     url: string
+    ads: CampaignAd[] | []
     constructor({ id, name, client_id, client_name, start_date, end_date, url }: CampaignResponse) {
         this.id = id
         this.name = name
@@ -31,5 +51,9 @@ export class Campaign {
             id: client_id,
             name: client_name
         }
+    }
+
+    addAds(ads: AdSelectable[]) {
+        this.ads = ads.map(ad => new CampaignAd(ad))
     }
 }

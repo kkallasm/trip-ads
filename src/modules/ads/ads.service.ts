@@ -1,76 +1,64 @@
-import { Campaign } from "../campaign/campaign.model";
-import { StatsModel } from '../stats/stats.model'
-import { CampaignAd, CampaignAdModel, EnumAdLocationType } from "../campaignAd/campaignAd.model";
-import { AdStatsModel } from "../adStats/adStats.model";
+import { CampaignAd } from "../campaign/campaign.model";
+import { activeAdsResponse, EnumAdLocationType } from "../campaignAd/campaignAd.model";
+import { db } from "../../utils/database";
 
-export type CampaignAdWithUrl = CampaignAd & {
-    url: string
-}
+export async function getActiveAdsByLocation(location: EnumAdLocationType) {
+    const today = new Date().toDateString()
+    const ads = await db
+        .selectFrom('ads')
+        .innerJoin('campaigns', 'campaigns.id', 'ads.campaign_id')
+        .where('campaigns.start_date', '<=', today)
+        .where('campaigns.end_date', '>=', today)
+        .where('ads.location', '=', location)
+        .where('ads.active', '=', true)
+        .selectAll()
+        //.select(['ads.id'])
+        //.select(['ads.id', 'ads.campaign_id', 'ads.image_name', 'ads.location', 'ads.active', 'campaigns.url as url'])
+        .execute()
 
-export async function getActiveAdsByLocation(location: EnumAdLocationType): Promise<CampaignAdWithUrl[]> {
-    const ads: any = []
-    /*const today = new Date().toDateString()
-    const campaigns = await CampaignModel.find({
-        startDate: { $lte: today },
-        endDate: { $gte: today },
-        ads: { $elemMatch: { location: location, active: true } },
-    }, { "ads": 1 }).select(['ads', 'url'])
-
-    if (!campaigns) {
-        return []
-    }
-
-    let ads: CampaignAdWithUrl[] = []
-    campaigns.map((campaign: Campaign) => {
-        const filtered = campaign.ads?.filter(ad => ad.location === location)
-        if (filtered) {
-            const res: CampaignAdWithUrl[] = filtered?.map(f => {
-                return {...f.toJSON(), url: process.env.APP_URL + '/api/maasikas/' + f._id + '/click'}
-            })
-            ads.push(...res)
-        }
-    })*/
-
-    return ads
-}
-
-export async function addAdImpressionOLD(
-    adId: string,
-    campaignId: string,
-    data?: any
-) {
-    return StatsModel.create({
-        ad: adId,
-        campaignId: campaignId,
-        action: 'view',
-        data: data,
-    })
+    return ads.map(ad => new CampaignAd(ad))
 }
 
 export async function addAdImpression(
-  adId: string
+  adId: number,
+  campaignId: number
 ) {
-    return AdStatsModel.updateOne(
-      { adId: adId },
-      { $inc: { impressions: +1 } },
-      { upsert: true }
-    )
+    await db
+        .insertInto('stats')
+        .values({ad_id: adId, campaign_id: campaignId, impressions: 1, clicks: 1})
+        .onConflict((oc) => oc
+            .columns(['ad_id', 'campaign_id'])
+            .doUpdateSet({
+                impressions: (eb) => eb('stats.impressions', '+', 1)
+            })
+            .where('stats.ad_id', '=', adId)
+            .where('stats.campaign_id', '=', campaignId)
+        )
+        .execute();
 }
 
-export async function addAdClick(adId: string, campaignId: string, data?: any) {
-    return StatsModel.create({
-        ad: adId,
-        campaignId: campaignId,
-        action: 'click',
-        data: data,
-    })
+export async function addAdClick(
+    adId: number,
+    campaignId: number
+) {
+    await db
+        .insertInto('stats')
+        .values({ad_id: adId, campaign_id: campaignId, impressions: 1, clicks: 1})
+        .onConflict((oc) => oc
+            .columns(['ad_id', 'campaign_id'])
+            .doUpdateSet({
+                clicks: (eb) => eb('stats.clicks', '+', 1)
+            })
+            .where('stats.ad_id', '=', adId)
+            .where('stats.campaign_id', '=', campaignId)
+        )
+        .execute();
 }
 
-export function getAdById(adId: string) {
-    return CampaignAdModel.findById(adId)
-}
-
-export async function getCampaignByAdId(adId: string) {
-    //return CampaignModel.findOne({ ads: { $elemMatch: { _id: adId } } }).lean()
-    return true
+export async function getAdById(adId: number) {
+    return await db
+        .selectFrom('ads')
+        .selectAll()
+        .where('id', '=', adId)
+        .executeTakeFirstOrThrow()
 }

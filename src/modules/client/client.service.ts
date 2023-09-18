@@ -1,4 +1,3 @@
-import { ClientModel } from './client.model'
 import { db } from '../../utils/database'
 
 export async function getAllClients() {

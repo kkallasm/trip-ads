@@ -1,51 +1,60 @@
-import { CampaignAd, CampaignAdModel, EnumAdLocation } from "./campaignAd.model";
+import { EnumAdLocation } from "./campaignAd.model";
+import { db } from "../../utils/database";
+import { AdSelectable, AdUpdate, NewAd } from "../../types";
+import { CampaignAd } from "../campaign/campaign.model";
 
-export async function getAdsByCampaignId(campaignId: string) {
-  return CampaignAdModel.find({ campaignId: campaignId }).lean()
+export async function getAdsByCampaignId(campaignId: number) {
+    return await db
+        .selectFrom('ads')
+        .selectAll()
+        .where('campaign_id', '=', campaignId)
+        .execute()
 }
 
-export function createCampaignAd({
-    campaignId,
-    location,
-    imageName,
-}: {
-    campaignId: string
-    location: keyof typeof EnumAdLocation
-    imageName: string
-}) {
-    return CampaignAdModel.create({
-        campaignId,
-        location,
-        imageName,
-    })
+export async function createCampaignAd(values: NewAd) {
+    return await db
+        .insertInto('ads')
+        .values(values)
+        .returningAll()
+        .executeTakeFirstOrThrow()
 }
 
 export async function updateCampaignAd(
-  ad: CampaignAd,
+  ad: AdSelectable,
   location: keyof typeof EnumAdLocation,
   imageName?: string
 ) {
-    const values = {
-        locationCode: location
+    const values: AdUpdate = {
+        location: location
     }
 
     if (imageName) {
-        Object.assign(values, {imageName: imageName})
+        Object.assign(values, {image_name: imageName})
     }
 
-    return CampaignAdModel.findByIdAndUpdate(ad.id, values, { new: true })
+    const res = await db
+        .updateTable('ads')
+        .set(values)
+        .where('id', '=', ad.id)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+
+    return new CampaignAd(res)
 }
 
 export async function setCampaignAdActive(
-  ad: CampaignAd,
+  ad: AdSelectable,
   active: boolean
 ) {
-    const updatedAd = await CampaignAdModel.findByIdAndUpdate(ad.id, { active: active }, { new: true })
-    /*await CampaignModel.updateOne(
-      { _id: ad.campaignId, "ads._id": ad.id },
-      { $set: { "ads.$.active": active } },
-      { new: true }
-    )*/
+    const values: AdUpdate = {
+        active: active
+    }
+    const res = await db
+        .updateTable('ads')
+        .set(values)
+        .where('id', '=', ad.id)
+        .returningAll()
+        .executeTakeFirstOrThrow()
 
-    return updatedAd
+    return new CampaignAd(res)
 }

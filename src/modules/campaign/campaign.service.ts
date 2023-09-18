@@ -1,11 +1,11 @@
-import { Campaign, CampaignResponse } from './campaign.model'
-import { EnumAdLocation } from '../campaignAd/campaignAd.model'
-import { getAdsByCampaignId } from '../campaignAd/campaignAd.service'
-import { db } from '../../utils/database'
+import { Campaign, CampaignResponse } from "./campaign.model";
+import { EnumAdLocation } from "../campaignAd/campaignAd.model";
+import { getAdsByCampaignId } from "../campaignAd/campaignAd.service";
+import { db } from "../../utils/database";
 import { CampaignSelectable, CampaignUpdate, NewCampaign } from "../../types";
 
 export async function getAllCampaigns(): Promise<Campaign[]> {
-    const campaigns = await db
+    const campaigns: CampaignResponse[] = await db
         .selectFrom('campaigns')
         .innerJoin('clients', 'clients.id', 'campaigns.client_id')
         .select([
@@ -20,7 +20,12 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
         ])
         .execute()
 
-    return campaigns.map((campaign: CampaignResponse) => new Campaign(campaign))
+    return await Promise.all(campaigns.map(async (campaign: CampaignResponse) => {
+        const ads = await getAdsByCampaignId(campaign.id)
+        const newCampaign = new Campaign(campaign)
+        newCampaign.addAds(ads)
+        return newCampaign
+    }))
 }
 
 export async function getCampaign(campaignId: number) {
@@ -41,6 +46,14 @@ export async function getCampaign(campaignId: number) {
         .executeTakeFirstOrThrow()
 
     return new Campaign(campaign)
+}
+
+export async function getCampaignUrl(campaignId: number) {
+    return await db
+        .selectFrom('campaigns')
+        .select(['url'])
+        .where('campaigns.id', '=', campaignId)
+        .executeTakeFirstOrThrow()
 }
 
 export async function createCampaign(values: NewCampaign) {
@@ -75,14 +88,6 @@ export async function updateCampaignLocations(
         $addToSet: { locations: location }
     })*/
 
-    return true
-}
-
-export async function syncCampaignAds(campaignId: string) {
-    const ads = await getAdsByCampaignId(campaignId)
-    /*return CampaignModel.findByIdAndUpdate(campaignId, {
-        $set: { ads: ads }
-    })*/
     return true
 }
 

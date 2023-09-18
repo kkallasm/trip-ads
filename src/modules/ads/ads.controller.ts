@@ -3,10 +3,10 @@ import { StatusCodes } from 'http-status-codes'
 import {
     addAdClick,
     addAdImpression,
-    getActiveAdsByLocation,
-    getCampaignByAdId
+    getActiveAdsByLocation
 } from "./ads.service";
 import { EnumAdLocationType } from "../campaignAd/campaignAd.model";
+import { getCampaignUrl } from "../campaign/campaign.service";
 
 export async function getAdsHandler(
     req: Request<{ location: EnumAdLocationType }>,
@@ -14,7 +14,7 @@ export async function getAdsHandler(
 ) {
     const { location } = req.params
     const ads = await getActiveAdsByLocation(location)
-    if (!ads)
+    if (!ads || ads.length === 0)
         return res.status(StatusCodes.OK).send(false)
 
     if (ads.length === 1) {
@@ -25,12 +25,12 @@ export async function getAdsHandler(
 }
 
 export async function adImpressionHandler(
-    req: Request<{ adId: string }, {}, {}>,
+    req: Request<{ adId: string, campaignId: string }, {}, {}>,
     res: Response
 ) {
     try {
-        const { adId } = req.params
-        await addAdImpression(adId)
+        const { adId, campaignId } = req.params
+        await addAdImpression(parseInt(adId), parseInt(campaignId)).catch(e => {})
         return res.status(StatusCodes.OK).send('success')
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)
@@ -38,19 +38,15 @@ export async function adImpressionHandler(
 }
 
 export async function adClickHandler(
-    req: Request<{ adId: string }, {}, {}>,
+    req: Request<{ adId: string, campaignId: string }, {}, {}>,
     res: Response
 ) {
-    /*try {
-        const { adId } = req.params
-        const campaign = await getCampaignByAdId(adId)
-        if (campaign) {
-            await addAdClick(adId, campaign._id)
-            return res.status(StatusCodes.OK).send(campaign.url)
-        } else return res.sendStatus(StatusCodes.CONFLICT)
+    try {
+        const { adId, campaignId } = req.params
+        await addAdClick(parseInt(adId), parseInt(campaignId))
+        const campaign = await getCampaignUrl(parseInt(campaignId))
+        return res.redirect(campaign.url)
     } catch (e: any) {
-        return res.status(StatusCodes.CONFLICT).send(e?.message)
-    }*/
-
-    return res.status(StatusCodes.OK).send('todo')
+        return res.status(StatusCodes.CONFLICT).send('Oops.. something went wrong')
+    }
 }

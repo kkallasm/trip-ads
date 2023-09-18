@@ -24,11 +24,10 @@ router.get('/', getCampaignsHandler)
 router.post('/', validateRequest(campaignAddSchema), createCampaignHandler)
 router.get('/:campaignId', getCampaignHandler)
 router.patch('/:campaignId', validateRequest(campaignUpdateSchema), updateCampaignHandler)
-/*
 
 router.get('/:campaignId/ads', getCampaignAdsHandler)
 router.post('/:campaignId/ads', validateRequest(campaignAdAddSchema), createCampaignAdHandler)
 router.patch('/:campaignId/ads/:adId', validateRequest(campaignAdUpdateSchema), updateCampaignAdHandler)
-router.patch('/:campaignId/ads/:adId/active', validateRequest(campaignAdActiveSchema), setCampaignAdActiveHandler)*/
+router.patch('/:campaignId/ads/:adId/active', validateRequest(campaignAdActiveSchema), setCampaignAdActiveHandler)
 
 export default router

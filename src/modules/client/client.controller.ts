@@ -37,7 +37,6 @@ export async function createClientsHandler(
         return res.status(StatusCodes.OK).send(newClient)
     } catch (e: any) {
         if (e?.code === '23505') {
-            console.log(e.code, 'CODE')
             return res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
                 .send('Client "' + req.body.name + '" already exists')

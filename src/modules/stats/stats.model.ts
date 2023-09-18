@@ -1,9 +1,8 @@
 import mongoose, { Schema } from 'mongoose'
-import { CampaignAd } from '../campaignAd/campaignAd.model';
 import { Campaign } from '../campaign/campaign.model';
 
 export interface Stats extends mongoose.Document {
-    ad: CampaignAd | string
+    ad: number | string
     campaignId: Campaign | string
     action: string
     data: object

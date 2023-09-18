@@ -8,7 +8,7 @@ import {
 const router = express.Router()
 
 router.get('/:location', getAdsHandler)
-router.get('/:adId/click', adClickHandler)
-router.post('/:adId/imp', adImpressionHandler)
+router.get('/:adId/c/:campaignId/click', adClickHandler)
+router.post('/:adId/c/:campaignId/imp', adImpressionHandler)
 
 export default router

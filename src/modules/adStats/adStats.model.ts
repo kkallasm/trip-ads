@@ -1,8 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
-import { CampaignAd } from '../campaignAd/campaignAd.model'
 
 export interface AdStats extends mongoose.Document {
-    adId: CampaignAd | string
+    adId: string | number
     impressions: number
     clicks: number
 }
