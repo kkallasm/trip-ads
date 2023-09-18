@@ -1,8 +1,7 @@
-import { Campaign, CampaignResponse } from "./campaign.model";
-import { EnumAdLocation } from "../campaignAd/campaignAd.model";
-import { getAdsByCampaignId } from "../campaignAd/campaignAd.service";
-import { db } from "../../utils/database";
-import { CampaignSelectable, CampaignUpdate, NewCampaign } from "../../types";
+import { Campaign, CampaignResponse } from './campaign.model'
+import { getAdsByCampaignId } from '../campaignAd/campaignAd.service'
+import { db } from '../../utils/database'
+import { CampaignSelectable, CampaignUpdate, NewCampaign } from '../../types'
 
 export async function getAllCampaigns(): Promise<Campaign[]> {
     const campaigns: CampaignResponse[] = await db
@@ -16,16 +15,18 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
             'campaigns.start_date',
             'campaigns.end_date',
             'campaigns.url',
-            'campaigns.created_at'
+            'campaigns.created_at',
         ])
         .execute()
 
-    return await Promise.all(campaigns.map(async (campaign: CampaignResponse) => {
-        const ads = await getAdsByCampaignId(campaign.id)
-        const newCampaign = new Campaign(campaign)
-        newCampaign.addAds(ads)
-        return newCampaign
-    }))
+    return await Promise.all(
+        campaigns.map(async (campaign: CampaignResponse) => {
+            const ads = await getAdsByCampaignId(campaign.id)
+            const newCampaign = new Campaign(campaign)
+            newCampaign.addAds(ads)
+            return newCampaign
+        })
+    )
 }
 
 export async function getCampaign(campaignId: number) {
@@ -40,7 +41,7 @@ export async function getCampaign(campaignId: number) {
             'campaigns.start_date',
             'campaigns.end_date',
             'campaigns.url',
-            'campaigns.created_at'
+            'campaigns.created_at',
         ])
         .where('campaigns.id', '=', campaignId)
         .executeTakeFirstOrThrow()
@@ -78,25 +79,4 @@ export async function updateCampaign(
         .executeTakeFirstOrThrow()
 
     return await getCampaign(res.id)
-}
-
-export async function updateCampaignLocations(
-    campaignId: string,
-    location: EnumAdLocation
-) {
-    /*return CampaignModel.findByIdAndUpdate(campaignId, {
-        $addToSet: { locations: location }
-    })*/
-
-    return true
-}
-
-export async function getCampaignsByClientId(clientId: string) {
-    return true
-    //return CampaignModel.find({ client: clientId }).lean()
-}
-
-export async function deleteCampaignsByClientId(clientId: string) {
-    return true
-    //return CampaignModel.deleteMany({ client: clientId })
 }

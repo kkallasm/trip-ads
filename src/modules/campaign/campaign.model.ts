@@ -12,8 +12,9 @@ export interface CampaignResponse {
     created_at: string
 }
 
-export type AdSelectableWithUrl = AdSelectable & {
-    url: string
+export type AdSelectableWithStats = AdSelectable & {
+    impressions?: number
+    clicks?: number
 }
 
 export class CampaignAd {
@@ -23,13 +24,17 @@ export class CampaignAd {
     locationName: string
     url: string
     active: boolean
-    constructor({ id, campaign_id, image_name, location, active }: AdSelectable) {
+    impressions?: number
+    clicks?: number
+    constructor({ id, campaign_id, image_name, location, active, impressions, clicks }: AdSelectableWithStats) {
         this.id = id
         this.campaignId = campaign_id
         this.imageUrl = process.env.ADS_IMAGE_URL + '/' + image_name
         this.locationName = EnumAdLocation[location as EnumAdLocationType]
         this.url = process.env.APP_URL + '/api/maasikas/' + id + '/c/' + campaign_id + '/click'
         this.active = active
+        this.impressions = impressions
+        this.clicks = clicks
     }
 }
 

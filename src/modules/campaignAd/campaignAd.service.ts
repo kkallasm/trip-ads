@@ -1,13 +1,22 @@
-import { EnumAdLocation } from "./campaignAd.model";
-import { db } from "../../utils/database";
-import { AdSelectable, AdUpdate, NewAd } from "../../types";
-import { CampaignAd } from "../campaign/campaign.model";
+import { EnumAdLocation } from './campaignAd.model'
+import { db } from '../../utils/database'
+import { AdSelectable, AdUpdate, NewAd } from '../../types'
+import { CampaignAd } from '../campaign/campaign.model'
 
 export async function getAdsByCampaignId(campaignId: number) {
     return await db
         .selectFrom('ads')
-        .selectAll()
-        .where('campaign_id', '=', campaignId)
+        .leftJoin('stats', 'stats.ad_id', 'ads.id')
+        .select([
+            'ads.id',
+            'ads.campaign_id',
+            'ads.location',
+            'ads.active',
+            'ads.image_name',
+            'stats.clicks',
+            'stats.impressions',
+        ])
+        .where('ads.campaign_id', '=', campaignId)
         .execute()
 }
 
@@ -20,16 +29,16 @@ export async function createCampaignAd(values: NewAd) {
 }
 
 export async function updateCampaignAd(
-  ad: AdSelectable,
-  location: keyof typeof EnumAdLocation,
-  imageName?: string
+    ad: AdSelectable,
+    location: keyof typeof EnumAdLocation,
+    imageName?: string
 ) {
     const values: AdUpdate = {
-        location: location
+        location: location,
     }
 
     if (imageName) {
-        Object.assign(values, {image_name: imageName})
+        Object.assign(values, { image_name: imageName })
     }
 
     const res = await db
@@ -42,12 +51,9 @@ export async function updateCampaignAd(
     return new CampaignAd(res)
 }
 
-export async function setCampaignAdActive(
-  ad: AdSelectable,
-  active: boolean
-) {
+export async function setCampaignAdActive(ad: AdSelectable, active: boolean) {
     const values: AdUpdate = {
-        active: active
+        active: active,
     }
     const res = await db
         .updateTable('ads')

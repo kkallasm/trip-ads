@@ -1,4 +1,4 @@
-import { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely'
+import { ColumnType, Generated, Insertable, Selectable, SelectType, Updateable } from "kysely";
 
 export interface Database {
   campaigns: CampaignsTable
