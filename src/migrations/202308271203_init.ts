@@ -48,7 +48,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .createType("location")
-    .asEnum(["desktop_body", "desktop_flightOffer", "desktop_sidebar_small", "desktop_sidebar_large", "mobile_1", "mobile_2", "mobile_3"])
+    .asEnum(["desktop_body", "desktop_flight_offers_top", "desktop_sidebar_small", "desktop_sidebar_large", "mobile_1", "mobile_2", "mobile_3"])
     .execute();
 
   await db.schema
