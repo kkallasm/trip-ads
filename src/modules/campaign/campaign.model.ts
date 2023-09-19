@@ -45,6 +45,8 @@ export class Campaign {
     startDate: string
     endDate: string
     url: string
+    impressions?: number
+    clicks?: number
     ads: CampaignAd[] | []
     constructor({ id, name, client_id, client_name, start_date, end_date, url }: CampaignResponse) {
         this.id = id
@@ -60,5 +62,13 @@ export class Campaign {
 
     addAds(ads: AdSelectable[]) {
         this.ads = ads.map(ad => new CampaignAd(ad))
+    }
+
+    setImpressions(value: number) {
+        this.impressions = value
+    }
+
+    setClicks(value: number) {
+        this.clicks = value
     }
 }

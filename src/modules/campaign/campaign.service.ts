@@ -24,6 +24,10 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
             const ads = await getAdsByCampaignId(campaign.id)
             const newCampaign = new Campaign(campaign)
             newCampaign.addAds(ads)
+            const clicks = ads.reduce((acc, val) => acc + (val.clicks || 0), 0);
+            const impressions = ads.reduce((acc, val) => acc + (val.impressions || 0), 0);
+            newCampaign.setImpressions(impressions)
+            newCampaign.setClicks(clicks)
             return newCampaign
         })
     )
