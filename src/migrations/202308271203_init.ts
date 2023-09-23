@@ -59,9 +59,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn('image_name', 'varchar', (col) => col.notNull())
     .addColumn('location', sql`location`, (col) => col.notNull())
-    //.addColumn('location', 'varchar', (col) => col.notNull())
     .addColumn('active', 'boolean', (col) => col.notNull().defaultTo(true))
-    .addUniqueConstraint('ads_campaign_location_unique', ['campaign_id', 'location'])
+    //.addUniqueConstraint('ads_campaign_location_unique', ['campaign_id', 'location'])
     .execute()
 
   await db.schema
