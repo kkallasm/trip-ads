@@ -1,5 +1,7 @@
-import { CampaignAd } from '../campaign/campaign.model'
-import { EnumAdLocationType } from '../campaignAd/campaignAd.model'
+import {
+    CampaignActiveAd,
+    EnumAdLocationType,
+} from '../campaignAd/campaignAd.model'
 import { db } from '../../utils/database'
 
 export async function getActiveAdsByLocation(location: EnumAdLocationType) {
@@ -11,16 +13,31 @@ export async function getActiveAdsByLocation(location: EnumAdLocationType) {
         .where('campaigns.end_date', '>=', today)
         .where('ads.location', '=', location)
         .where('ads.active', '=', true)
-        .select([
-            'ads.id',
-            'ads.campaign_id',
-            'ads.image_name',
-            'ads.location',
-            'ads.active',
-        ])
+        .where('ads.start_date', '=', today)
+        .where('ads.end_date', '=', today)
+        .select(['ads.id', 'ads.campaign_id', 'ads.image_name'])
         .execute()
 
-    return ads.map((ad) => new CampaignAd(ad))
+    return ads.map((ad) => {
+        return new CampaignActiveAd(ad)
+    })
+}
+
+export async function getFullscreenMobileAd() {
+    const today = new Date().toDateString()
+    const ads = await db
+        .selectFrom('ads')
+        .innerJoin('campaigns', 'campaigns.id', 'ads.campaign_id')
+        .where('campaigns.start_date', '<=', today)
+        .where('campaigns.end_date', '>=', today)
+        .where('ads.location', '=', 'mobile_fullscreen')
+        .where('ads.active', '=', true)
+        .where('ads.start_date', '<=', today)
+        .where('ads.end_date', '>=', today)
+        .select(['ads.id', 'ads.campaign_id', 'ads.image_name'])
+        .execute()
+
+    return ads.map((ad) => new CampaignActiveAd(ad))
 }
 
 export async function addAdImpression(adId: number, campaignId: number) {

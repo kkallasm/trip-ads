@@ -15,8 +15,8 @@ import { getCampaign } from "../campaign/campaign.service";
 import { getAdById } from "../ads/ads.service";
 import { UploadedFile } from "express-fileupload";
 import { uploadFileToSpaces } from "../../utils/fileUpload";
-import { CampaignAd } from "../campaign/campaign.model";
 import { AdSelectable } from "../../types";
+import { CampaignAd } from "./campaignAd.model";
 
 export async function getCampaignAdsHandler(
   req: Request<campaignAdAddRequestType["params"]>,

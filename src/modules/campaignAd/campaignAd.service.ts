@@ -1,7 +1,6 @@
-import { EnumAdLocation } from './campaignAd.model'
+import { CampaignAd, EnumAdLocation } from "./campaignAd.model";
 import { db } from '../../utils/database'
 import { AdSelectable, AdUpdate, NewAd } from '../../types'
-import { CampaignAd } from '../campaign/campaign.model'
 
 export async function getAdsByCampaignId(campaignId: number) {
     return await db
@@ -15,6 +14,8 @@ export async function getAdsByCampaignId(campaignId: number) {
             'ads.image_name',
             'stats.clicks',
             'stats.impressions',
+            'ads.start_date',
+            'ads.end_date',
         ])
         .where('ads.campaign_id', '=', campaignId)
         .execute()

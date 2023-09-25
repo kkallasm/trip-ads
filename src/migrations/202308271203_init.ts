@@ -48,7 +48,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .createType("location")
-    .asEnum(["desktop_body", "desktop_flight_offers_top", "desktop_sidebar_small", "desktop_sidebar_large", "mobile_1", "mobile_2", "mobile_3"])
+    .asEnum(["desktop_body", "desktop_flight_offers_top", "desktop_sidebar_small", "desktop_sidebar_large", "mobile_1", "mobile_2", "mobile_3", "mobile_fullscreen"])
     .execute();
 
   await db.schema
@@ -61,6 +61,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('location', sql`location`, (col) => col.notNull())
     .addColumn('active', 'boolean', (col) => col.notNull().defaultTo(true))
     //.addUniqueConstraint('ads_campaign_location_unique', ['campaign_id', 'location'])
+    .addColumn('start_date', 'date')
+    .addColumn('end_date', 'date')
     .execute()
 
   await db.schema
@@ -79,6 +81,18 @@ export async function up(db: Kysely<any>): Promise<void> {
       .createIndex('ads_active_index')
       .on('ads')
       .column('active')
+      .execute()
+
+  await db.schema
+      .createIndex('ads_start_date_index')
+      .on('ads')
+      .column('start_date')
+      .execute()
+
+  await db.schema
+      .createIndex('ads_end_date_index')
+      .on('ads')
+      .column('end_date')
       .execute()
 
   await db.schema
