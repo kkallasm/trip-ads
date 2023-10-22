@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import {
     addAdClick,
     addAdImpression,
-    getActiveAdsByLocation
+    getActiveAdsByLocation, getFullscreenMobileAd
 } from "./ads.service";
 import { EnumAdLocationType } from "../campaignAd/campaignAd.model";
 import { getCampaignUrl } from "../campaign/campaign.service";
@@ -13,14 +13,19 @@ export async function getAdsHandler(
     res: Response
 ) {
     const { location } = req.params
-    const ads = await getActiveAdsByLocation(location)
-    if (!ads || ads.length === 0)
-        return res.status(StatusCodes.OK).send(false)
-
-    if (ads.length === 1) {
-        return res.status(StatusCodes.OK).send(ads[0])
+    if (location === 'mobile_fullscreen') {
+        const fullscreenAd = await getFullscreenMobileAd()
+        return res.status(StatusCodes.OK).send(fullscreenAd ?? false)
     } else {
-        return res.status(StatusCodes.OK).send(ads[(Math.floor(Math.random() * ads.length))])
+        const ads = await getActiveAdsByLocation(location)
+        if (!ads || ads.length === 0)
+            return res.status(StatusCodes.OK).send(false)
+
+        if (ads.length === 1) {
+            return res.status(StatusCodes.OK).send(ads[0])
+        } else {
+            return res.status(StatusCodes.OK).send(ads[(Math.floor(Math.random() * ads.length))])
+        }
     }
 }
 

@@ -13,8 +13,6 @@ export async function getActiveAdsByLocation(location: EnumAdLocationType) {
         .where('campaigns.end_date', '>=', today)
         .where('ads.location', '=', location)
         .where('ads.active', '=', true)
-        .where('ads.start_date', '=', today)
-        .where('ads.end_date', '=', today)
         .select(['ads.id', 'ads.campaign_id', 'ads.image_name'])
         .execute()
 
