@@ -25,6 +25,7 @@ export async function getAdsHandler(
                     maxAge: 36000000, //10h
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'none'
                 })
             }
 
