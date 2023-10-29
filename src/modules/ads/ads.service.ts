@@ -23,7 +23,7 @@ export async function getActiveAdsByLocation(location: EnumAdLocationType) {
 
 export async function getFullscreenMobileAd() {
     const today = new Date().toDateString()
-    const ads = await db
+    const ad = await db
         .selectFrom('ads')
         .innerJoin('campaigns', 'campaigns.id', 'ads.campaign_id')
         .where('campaigns.start_date', '<=', today)
@@ -33,19 +33,21 @@ export async function getFullscreenMobileAd() {
         .where('ads.start_date', '<=', today)
         .where('ads.end_date', '>=', today)
         .select(['ads.id', 'ads.campaign_id', 'ads.image_name'])
-        .execute()
+        .executeTakeFirst()
 
-    return ads.map((ad) => new CampaignActiveAd(ad))
+    return ad ? new CampaignActiveAd(ad) : undefined
 }
 
 export async function addAdImpression(adId: number, campaignId: number) {
+    //todo: only update, create tabel before
+
     await db
         .insertInto('stats')
         .values({
             ad_id: adId,
             campaign_id: campaignId,
             impressions: 1,
-            clicks: 1,
+            clicks: 0,
         })
         .onConflict((oc) =>
             oc
@@ -60,6 +62,8 @@ export async function addAdImpression(adId: number, campaignId: number) {
 }
 
 export async function addAdClick(adId: number, campaignId: number) {
+    //todo: only update, create tabel before
+
     await db
         .insertInto('stats')
         .values({

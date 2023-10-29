@@ -1,8 +1,10 @@
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import {
+    getOverlappingFullScreenDates,
     createCampaignAd,
     getAdsByCampaignId,
+    getFullScreenMobileAdsByCampaignId,
     setCampaignAdActive,
     updateCampaignAd
 } from "./campaignAd.service";
@@ -14,7 +16,7 @@ import {
 import { getCampaign } from "../campaign/campaign.service";
 import { getAdById } from "../ads/ads.service";
 import { UploadedFile } from "express-fileupload";
-import { uploadFileToSpaces } from "../../utils/fileUpload";
+import { deleteFileFromSpaces, uploadFileToSpaces } from "../../utils/fileUpload";
 import { AdSelectable } from "../../types";
 import { CampaignAd } from "./campaignAd.model";
 
@@ -42,7 +44,7 @@ export async function createCampaignAdHandler(
   res: Response
 ) {
     const { campaignId } = req.params
-    const { location } = req.body
+    const { location, startDate } = req.body
     const image = req.files?.image as UploadedFile
 
     try {
@@ -51,11 +53,37 @@ export async function createCampaignAdHandler(
             return res.status(StatusCodes.NOT_FOUND).send('Campaign not found')
         }
 
+        if (location === 'mobile_fullscreen') {
+            const adsCount = await getFullScreenMobileAdsByCampaignId(parseInt(campaignId));
+            if (adsCount && adsCount.length >= 2) {
+                return res.status(StatusCodes.CONFLICT).send({
+                    'errors': {
+                        'location': [
+                            'Can\'t have more than 2 full screen ads per campaign'
+                        ]
+                    }
+                })
+            } else {
+                const overlappingDates = await getOverlappingFullScreenDates(startDate as string)
+                if (overlappingDates && overlappingDates.length > 0) {
+                    return res.status(StatusCodes.CONFLICT).send({
+                        'errors': {
+                            'startDate': [
+                                'This date is taken'
+                            ]
+                        }
+                    })
+                }
+            }
+        }
+
         const fileName = await uploadFileToSpaces(image)
         const ad = await createCampaignAd({
             campaign_id: parseInt(campaignId),
             location: location,
             image_name: fileName,
+            start_date: startDate ?? undefined,
+            end_date: startDate ?? undefined
         })
 
         return res.status(StatusCodes.OK).send(new CampaignAd(ad))
@@ -79,7 +107,8 @@ export async function updateCampaignAdHandler(
   res: Response
 ) {
     const { campaignId, adId } = req.params
-    const { location } = req.body
+    const { location, startDate } = req.body
+    const image = req.files?.image as UploadedFile
 
     try {
         const ad: AdSelectable = await getAdById(parseInt(adId))
@@ -91,13 +120,20 @@ export async function updateCampaignAdHandler(
             return res.sendStatus(StatusCodes.FORBIDDEN)
         }
 
-        //todo: update image in spaces
+        let values = {
+            location: location ?? undefined,
+            start_date: startDate ?? undefined,
+            end_date: startDate ?? undefined
+        }
+
         let imageName = undefined
-        /*if (image) {
+        if (image) {
+            imageName = await uploadFileToSpaces(image)
+            Object.assign(values, { image_name: imageName })
+            deleteFileFromSpaces(ad.image_name)
+        }
 
-        }*/
-
-        const updated = await updateCampaignAd(ad, location, imageName)
+        const updated = await updateCampaignAd(ad, values)
         return res.status(StatusCodes.OK).send(updated)
     } catch (e: any) {
         return res.status(StatusCodes.CONFLICT).send(e?.message)

@@ -28,3 +28,24 @@ export async function uploadFileToSpaces(image: UploadedFile) {
 
     return imageName
 }
+
+export function deleteFileFromSpaces(imageName: string) {
+    AWS.config.update({
+        region: 'fra1',
+        credentials: {
+            accessKeyId: process.env.SPACES_ACCESS_KEY as string,
+            secretAccessKey: process.env.SPACES_SECRET_KEY as string,
+        },
+    })
+
+    const s3 = new AWS.S3({
+        endpoint: 'https://fra1.digitaloceanspaces.com',
+    })
+
+    s3.deleteObject({
+        Bucket: 'trip-ads-spaces',
+        Key: imageName
+    },function (err,data){
+        return !err;
+    })
+}

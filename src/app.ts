@@ -4,11 +4,11 @@ import adsRouter from './modules/ads/ads.route'
 import clientRouter from './modules/client/client.route'
 import cors from 'cors'
 import helmet from 'helmet'
-import { connectToDatabase } from './utils/db'
 import { StatusCodes } from 'http-status-codes'
 import campaignRoute from './modules/campaign/campaign.route'
 import logger from './utils/logger'
 import fileUpload from 'express-fileupload'
+import cookieParser from "cookie-parser"
 
 dotenv.config()
 
@@ -17,6 +17,11 @@ const port = process.env.PORT
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(helmet())
+app.use(express.static('public'))
+
+app.use(cors({credentials: true, origin: process.env.CORS_ORIGIN_URL}))
+
 app.use(fileUpload({
     limits: {
         fileSize: 1024 * 150 // 150Kb
@@ -26,14 +31,7 @@ app.use(fileUpload({
 
 //todo: compression ?
 
-app.use(express.static('public'))
-
-app.use(
-    cors({
-        origin: 'http://localhost:3000',
-    })
-)
-app.use(helmet())
+app.use(cookieParser())
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Trip.ee Ads API')

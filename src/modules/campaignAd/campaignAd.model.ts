@@ -35,6 +35,7 @@ export class CampaignAd {
     id: number
     campaignId: number
     imageUrl: string
+    location: string
     locationName: string
     url: string
     active: boolean
@@ -56,6 +57,7 @@ export class CampaignAd {
         this.id = id
         this.campaignId = campaign_id
         this.imageUrl = process.env.ADS_IMAGE_URL + '/' + image_name
+        this.location = location
         this.locationName = EnumAdLocation[location as EnumAdLocationType]
         this.url =
             process.env.APP_URL +

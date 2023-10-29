@@ -1,4 +1,4 @@
-import { CampaignAd, EnumAdLocation } from "./campaignAd.model";
+import { CampaignAd } from "./campaignAd.model";
 import { db } from '../../utils/database'
 import { AdSelectable, AdUpdate, NewAd } from '../../types'
 
@@ -21,6 +21,17 @@ export async function getAdsByCampaignId(campaignId: number) {
         .execute()
 }
 
+export async function getFullScreenMobileAdsByCampaignId(campaignId: number) {
+    return await db
+        .selectFrom('ads')
+        .select([
+            'ads.id'
+        ])
+        .where('ads.campaign_id', '=', campaignId)
+        .where('ads.location', '=', 'mobile_fullscreen')
+        .execute()
+}
+
 export async function createCampaignAd(values: NewAd) {
     return await db
         .insertInto('ads')
@@ -31,16 +42,21 @@ export async function createCampaignAd(values: NewAd) {
 
 export async function updateCampaignAd(
     ad: AdSelectable,
-    location: keyof typeof EnumAdLocation,
-    imageName?: string
+    values: AdUpdate
 ) {
-    const values: AdUpdate = {
-        location: location,
+    /*const values: AdUpdate = {}
+    if (location) {
+        Object.assign(values, { location: location })
     }
 
     if (imageName) {
         Object.assign(values, { image_name: imageName })
     }
+
+    if (startDate) {
+        Object.assign(values, { start_date: startDate })
+        Object.assign(values, { end_date: startDate })
+    }*/
 
     const res = await db
         .updateTable('ads')
@@ -64,4 +80,15 @@ export async function setCampaignAdActive(ad: AdSelectable, active: boolean) {
         .executeTakeFirstOrThrow()
 
     return new CampaignAd(res)
+}
+
+export async function getOverlappingFullScreenDates(date: string) {
+    return await db
+        .selectFrom('ads')
+        .select([
+            'ads.id'
+        ])
+        .where('ads.location', '=', 'mobile_fullscreen')
+        .where('ads.start_date', '=', date)
+        .execute()
 }

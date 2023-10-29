@@ -37,6 +37,7 @@ export const campaignAdAddSchema = object({
         location: z.enum(keys, {
             required_error: 'Asukoht puudu',
         }),
+        startDate: z.string().optional(),
     }),
     files: object({
         image: imageRule,
@@ -48,9 +49,13 @@ export const campaignAdUpdateSchema = campaignAdAddSchema.extend({
         campaignId: string(),
         adId: string(),
     }),
-    files: object({
-        image: imageRule.nullable(),
+    body: object({
+        startDate: z.string().optional(),
+        location: z.enum(keys).nullable(),
     }),
+    files: object({
+        image: imageRule,
+    }).nullable(),
 })
 
 export const campaignAdActiveSchema = object({
