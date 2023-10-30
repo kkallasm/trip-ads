@@ -18,6 +18,7 @@ export async function getAdsByCampaignId(campaignId: number) {
             'ads.end_date',
         ])
         .where('ads.campaign_id', '=', campaignId)
+        .orderBy('ads.location', 'asc')
         .execute()
 }
 
