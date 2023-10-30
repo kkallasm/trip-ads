@@ -15,22 +15,8 @@ export async function getAdsHandler(
 ) {
     const { location } = req.params
     if (location === 'mobile_fullscreen') {
-        const cookieFullscreenAdId = req.cookies['fullscreen_id']
-        if (cookieFullscreenAdId) {
-            return res.status(StatusCodes.OK).send(false)
-        } else {
-            const fullscreenAd = await getFullscreenMobileAd()
-            if (fullscreenAd) {
-                res.cookie('fullscreen_id', fullscreenAd.id, {
-                    maxAge: 36000000, //10h
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'none'
-                })
-            }
-
-            return res.status(StatusCodes.OK).send(fullscreenAd ?? false)
-        }
+        const fullscreenAd = await getFullscreenMobileAd()
+        return res.status(StatusCodes.OK).send(fullscreenAd ?? false)
     } else {
         const ads = await getActiveAdsByLocation(location)
         if (!ads || ads.length === 0)
