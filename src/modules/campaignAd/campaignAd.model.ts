@@ -18,21 +18,6 @@ export type AdSelectableWithStats = AdSelectable & {
     clicks?: number
 }
 
-export class CampaignActiveAd {
-    id: number
-    campaignId: number
-    imageUrl: string
-    url: string
-    viewTagUrl?: string
-    constructor({id, campaign_id, image_name, view_tag_url}: {id: number, campaign_id: number, image_name: string, view_tag_url?: string}) {
-        this.id = id
-        this.campaignId = campaign_id
-        this.imageUrl = process.env.ADS_IMAGE_URL + '/' + image_name
-        this.url = process.env.APP_URL + '/api/maasikas/' + id + '/c/' + campaign_id + '/click'
-        this.viewTagUrl = view_tag_url
-    }
-}
-
 export class CampaignAd {
     id: number
     campaignId: number

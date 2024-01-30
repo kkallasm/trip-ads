@@ -1,14 +1,14 @@
 import {
-    CampaignActiveAd,
-    EnumAdLocationType,
-} from '../campaignAd/campaignAd.model'
+    CampaignAd,
+    EnumAdLocationType
+} from "../campaignAd/campaignAd.model";
 import { db } from '../../utils/database'
 
 export async function getActiveAdsByLocation(location: EnumAdLocationType) {
     const today = new Date().toDateString()
     const ads = await db
         .selectFrom('ads')
-        .select(['ads.id', 'ads.campaign_id', 'ads.image_name', 'ads.view_tag_url'])
+        .selectAll('ads')
         .innerJoin('campaigns', 'campaigns.id', 'ads.campaign_id')
         .where('campaigns.start_date', '<=', today)
         .where('campaigns.end_date', '>=', today)
@@ -17,7 +17,7 @@ export async function getActiveAdsByLocation(location: EnumAdLocationType) {
         .execute()
 
     return ads.map((ad) => {
-        return new CampaignActiveAd(ad)
+        return new CampaignAd(ad)
     })
 }
 
@@ -32,10 +32,10 @@ export async function getFullscreenMobileAd() {
         .where('ads.active', '=', true)
         .where('ads.start_date', '<=', today)
         .where('ads.end_date', '>=', today)
-        .select(['ads.id', 'ads.campaign_id', 'ads.image_name'])
+        .selectAll('ads')
         .executeTakeFirst()
 
-    return ad ? new CampaignActiveAd(ad) : undefined
+    return ad ? new CampaignAd(ad) : undefined
 }
 
 export async function addAdImpression(adId: number, campaignId: number) {
