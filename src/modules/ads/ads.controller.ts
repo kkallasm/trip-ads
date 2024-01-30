@@ -3,11 +3,10 @@ import { StatusCodes } from 'http-status-codes'
 import {
     addAdClick,
     addAdImpression,
-    getActiveAdsByLocation,
-    getFullscreenMobileAd,
-} from './ads.service'
+    getActiveAdsByLocation, getAdUrl,
+    getFullscreenMobileAd
+} from "./ads.service";
 import { EnumAdLocationType } from '../campaignAd/campaignAd.model'
-import { getCampaignUrl } from '../campaign/campaign.service'
 
 export async function getAdsHandler(
     req: Request<{ location: EnumAdLocationType }>,
@@ -54,8 +53,8 @@ export async function adClickHandler(
     try {
         const { adId, campaignId } = req.params
         await addAdClick(parseInt(adId), parseInt(campaignId))
-        const campaign = await getCampaignUrl(parseInt(campaignId))
-        return res.redirect(campaign.url)
+        const url = await getAdUrl(parseInt(adId))
+        return res.redirect(url)
     } catch (e: any) {
         return res
             .status(StatusCodes.CONFLICT)

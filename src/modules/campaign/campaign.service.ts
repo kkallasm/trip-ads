@@ -61,13 +61,13 @@ export async function getCampaign(campaignId: number) {
     return new Campaign(campaign)
 }
 
-export async function getCampaignUrl(campaignId: number) {
+/*export async function getCampaignUrl(campaignId: number) {
     return await db
         .selectFrom('campaigns')
         .select(['url'])
         .where('campaigns.id', '=', campaignId)
         .executeTakeFirstOrThrow()
-}
+}*/
 
 export async function createCampaign(values: NewCampaign) {
     const res: CampaignSelectable = await db

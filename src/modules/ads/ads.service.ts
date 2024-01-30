@@ -91,3 +91,14 @@ export async function getAdById(adId: number) {
         .where('id', '=', adId)
         .executeTakeFirstOrThrow()
 }
+
+export async function getAdUrl(adId: number) {
+    const res =  await db
+        .selectFrom('ads')
+        .innerJoin('campaigns', 'campaigns.id', 'ads.campaign_id')
+        .select(['ads.url as ad_url', 'campaigns.url as campaign_url'])
+        .where('ads.id', '=', adId)
+        .executeTakeFirstOrThrow()
+
+    return res.ad_url ?? res.campaign_url
+}
