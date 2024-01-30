@@ -16,10 +16,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('id', 'serial', (col) => col.primaryKey())
     .addColumn('name', 'varchar', (col) => col.notNull())
     .addColumn('client_id', 'integer', (col) => col.references('clients.id').onDelete('cascade').notNull())
-    .addColumn('start_date', 'timestamp', (col) =>
+    .addColumn('start_date', 'date', (col) =>
       col.notNull()
     )
-    .addColumn('end_date', 'timestamp', (col) =>
+    .addColumn('end_date', 'date', (col) =>
       col.notNull()
     )
     .addColumn('url', 'varchar', (col) => col.notNull())
@@ -63,6 +63,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     //.addUniqueConstraint('ads_campaign_location_unique', ['campaign_id', 'location'])
     .addColumn('start_date', 'date')
     .addColumn('end_date', 'date')
+    .addColumn('url', 'varchar')
+    .addColumn('view_tag_url', 'varchar')
     .execute()
 
   await db.schema

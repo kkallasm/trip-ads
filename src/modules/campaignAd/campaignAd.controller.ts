@@ -44,7 +44,7 @@ export async function createCampaignAdHandler(
   res: Response
 ) {
     const { campaignId } = req.params
-    const { location, startDate } = req.body
+    const { location, startDate, url, viewTagUrl } = req.body
     const image = req.files?.image as UploadedFile
 
     try {
@@ -83,7 +83,9 @@ export async function createCampaignAdHandler(
             location: location,
             image_name: fileName,
             start_date: startDate ?? undefined,
-            end_date: startDate ?? undefined
+            end_date: startDate ?? undefined,
+            url: url ?? undefined,
+            view_tag_url: viewTagUrl ?? undefined
         })
 
         return res.status(StatusCodes.OK).send(new CampaignAd(ad))
@@ -107,7 +109,7 @@ export async function updateCampaignAdHandler(
   res: Response
 ) {
     const { campaignId, adId } = req.params
-    const { location, startDate } = req.body
+    const { location, startDate, url, viewTagUrl } = req.body
     const image = req.files?.image as UploadedFile
 
     try {
@@ -123,7 +125,9 @@ export async function updateCampaignAdHandler(
         let values = {
             location: location ?? undefined,
             start_date: startDate ?? undefined,
-            end_date: startDate ?? undefined
+            end_date: startDate ?? undefined,
+            url: url ?? undefined,
+            view_tag_url: viewTagUrl ?? undefined
         }
 
         let imageName = undefined

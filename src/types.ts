@@ -49,6 +49,8 @@ export interface AdsTable {
     active: ColumnType<boolean, undefined, boolean | undefined>
     start_date?: string
     end_date?: string
+    url?: string
+    view_tag_url?: string
 }
 
 export type AdSelectable = Selectable<AdsTable>

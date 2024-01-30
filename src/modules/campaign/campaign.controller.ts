@@ -11,7 +11,11 @@ import { getAllClients } from '../client/client.service'
 import { Campaign } from './campaign.model'
 
 export async function getCampaignsHandler(req: Request, res: Response) {
-    const campaigns = await getAllCampaigns()
+    const limit = req.query.limit as string || '10'
+    const offset = req.query.offset as string || '0'
+    const campaigns = await getAllCampaigns(parseInt(limit), parseInt(offset))
+
+    //todo: no need to query all clients here every time
     const clients = await getAllClients()
     return res
         .status(StatusCodes.OK)

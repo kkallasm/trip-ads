@@ -3,8 +3,8 @@ import { getAdsByCampaignId } from '../campaignAd/campaignAd.service'
 import { db } from '../../utils/database'
 import { CampaignSelectable, CampaignUpdate, NewCampaign } from '../../types'
 
-export async function getAllCampaigns(): Promise<Campaign[]> {
-    const campaigns: CampaignResponse[] = await db
+export async function getAllCampaigns(limit: number, offset: number) {
+    const query = db
         .selectFrom('campaigns')
         .innerJoin('clients', 'clients.id', 'campaigns.client_id')
         .select([
@@ -17,9 +17,13 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
             'campaigns.url',
             'campaigns.created_at',
         ])
-        .execute()
 
-    return await Promise.all(
+    const [campaigns, total] = await Promise.all([
+        query.offset(offset).limit(limit).orderBy('campaigns.id desc').execute(),
+        query.clearSelect().select(eb => [eb.fn.countAll<number>().as('count')]).executeTakeFirstOrThrow(),
+    ])
+
+    const res = await Promise.all(
         campaigns.map(async (campaign: CampaignResponse) => {
             const ads = await getAdsByCampaignId(campaign.id)
             const newCampaign = new Campaign(campaign)
@@ -29,8 +33,12 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
             newCampaign.setImpressions(impressions)
             newCampaign.setClicks(clicks)
             return newCampaign
-        })
-    )
+        }))
+
+    return {
+        items: res,
+        total: total.count,
+    }
 }
 
 export async function getCampaign(campaignId: number) {

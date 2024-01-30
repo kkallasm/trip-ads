@@ -16,6 +16,8 @@ export async function getAdsByCampaignId(campaignId: number) {
             'stats.impressions',
             'ads.start_date',
             'ads.end_date',
+            'ads.url',
+            'ads.view_tag_url',
         ])
         .where('ads.campaign_id', '=', campaignId)
         .orderBy('ads.location', 'asc')

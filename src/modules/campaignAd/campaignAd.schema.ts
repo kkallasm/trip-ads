@@ -38,6 +38,8 @@ export const campaignAdAddSchema = object({
             required_error: 'Asukoht puudu',
         }),
         startDate: z.string().optional(),
+        url: z.string().optional(),
+        viewTagUrl: z.string().optional()
     }),
     files: object({
         image: imageRule,
@@ -52,6 +54,8 @@ export const campaignAdUpdateSchema = campaignAdAddSchema.extend({
     body: object({
         startDate: z.string().optional(),
         location: z.enum(keys).nullable(),
+        url: z.string().optional(),
+        viewTagUrl: z.string().optional()
     }),
     files: object({
         image: imageRule,

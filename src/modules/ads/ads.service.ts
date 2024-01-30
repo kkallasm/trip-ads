@@ -8,12 +8,12 @@ export async function getActiveAdsByLocation(location: EnumAdLocationType) {
     const today = new Date().toDateString()
     const ads = await db
         .selectFrom('ads')
+        .select(['ads.id', 'ads.campaign_id', 'ads.image_name', 'ads.view_tag_url'])
         .innerJoin('campaigns', 'campaigns.id', 'ads.campaign_id')
         .where('campaigns.start_date', '<=', today)
         .where('campaigns.end_date', '>=', today)
         .where('ads.location', '=', location)
         .where('ads.active', '=', true)
-        .select(['ads.id', 'ads.campaign_id', 'ads.image_name'])
         .execute()
 
     return ads.map((ad) => {

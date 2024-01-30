@@ -23,11 +23,13 @@ export class CampaignActiveAd {
     campaignId: number
     imageUrl: string
     url: string
-    constructor({id, campaign_id, image_name}: {id: number, campaign_id: number, image_name: string}) {
+    viewTagUrl?: string
+    constructor({id, campaign_id, image_name, view_tag_url}: {id: number, campaign_id: number, image_name: string, view_tag_url?: string}) {
         this.id = id
         this.campaignId = campaign_id
         this.imageUrl = process.env.ADS_IMAGE_URL + '/' + image_name
         this.url = process.env.APP_URL + '/api/maasikas/' + id + '/c/' + campaign_id + '/click'
+        this.viewTagUrl = view_tag_url
     }
 }
 
@@ -37,29 +39,35 @@ export class CampaignAd {
     imageUrl: string
     location: string
     locationName: string
-    url: string
+    url?: string
+    impressionUrl: string
     active: boolean
     impressions?: number
     clicks?: number
     startDate?: string
     endDate?: string
+    viewTagUrl?: string
     constructor({
         id,
         campaign_id,
         image_name,
         location,
+        url,
         active,
         impressions,
         clicks,
         start_date,
         end_date,
+        view_tag_url
     }: AdSelectableWithStats) {
         this.id = id
         this.campaignId = campaign_id
         this.imageUrl = process.env.ADS_IMAGE_URL + '/' + image_name
         this.location = location
         this.locationName = EnumAdLocation[location as EnumAdLocationType]
-        this.url =
+        this.url = url
+        this.viewTagUrl = view_tag_url
+        this.impressionUrl =
             process.env.APP_URL +
             '/api/maasikas/' +
             id +
