@@ -39,48 +39,22 @@ export async function getFullscreenMobileAd() {
 }
 
 export async function addAdImpression(adId: number, campaignId: number) {
-    //todo: only update, create tabel before
-
-    await db
-        .insertInto('stats')
-        .values({
-            ad_id: adId,
-            campaign_id: campaignId,
-            impressions: 1,
-            clicks: 0,
+    await db.updateTable('stats')
+        .set({
+            impressions: (eb) => eb('stats.impressions', '+', 1),
         })
-        .onConflict((oc) =>
-            oc
-                .columns(['ad_id', 'campaign_id'])
-                .doUpdateSet({
-                    impressions: (eb) => eb('stats.impressions', '+', 1),
-                })
-                .where('stats.ad_id', '=', adId)
-                .where('stats.campaign_id', '=', campaignId)
-        )
+        .where('stats.ad_id', '=', adId)
+        .where('stats.campaign_id', '=', campaignId)
         .execute()
 }
 
 export async function addAdClick(adId: number, campaignId: number) {
-    //todo: only update, create tabel before
-
-    await db
-        .insertInto('stats')
-        .values({
-            ad_id: adId,
-            campaign_id: campaignId,
-            impressions: 1,
-            clicks: 1,
+    await db.updateTable('stats')
+        .set({
+            clicks: (eb) => eb('stats.clicks', '+', 1),
         })
-        .onConflict((oc) =>
-            oc
-                .columns(['ad_id', 'campaign_id'])
-                .doUpdateSet({
-                    clicks: (eb) => eb('stats.clicks', '+', 1),
-                })
-                .where('stats.ad_id', '=', adId)
-                .where('stats.campaign_id', '=', campaignId)
-        )
+        .where('stats.ad_id', '=', adId)
+        .where('stats.campaign_id', '=', campaignId)
         .execute()
 }
 

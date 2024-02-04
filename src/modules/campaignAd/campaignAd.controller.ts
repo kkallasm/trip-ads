@@ -6,7 +6,7 @@ import {
     getAdsByCampaignId,
     getFullScreenMobileAdsByCampaignId,
     setCampaignAdActive,
-    updateCampaignAd
+    updateCampaignAd, createStatsTableForAd
 } from "./campaignAd.service";
 import {
     campaignAdAddRequestType,
@@ -87,6 +87,8 @@ export async function createCampaignAdHandler(
             url: url ?? undefined,
             view_tag_url: viewTagUrl ?? undefined
         })
+
+        await createStatsTableForAd(ad.campaign_id, ad.id)
 
         return res.status(StatusCodes.OK).send(new CampaignAd(ad))
     } catch (e: any) {

@@ -42,6 +42,17 @@ export async function createCampaignAd(values: NewAd) {
         .returningAll()
         .executeTakeFirstOrThrow()
 }
+export async function createStatsTableForAd(campaignId: number, adId: number) {
+    return await db
+        .insertInto('stats')
+        .values({
+            ad_id: adId,
+            campaign_id: campaignId,
+            impressions: 0,
+            clicks: 0,
+        })
+        .executeTakeFirstOrThrow()
+}
 
 export async function updateCampaignAd(
     ad: AdSelectable,
